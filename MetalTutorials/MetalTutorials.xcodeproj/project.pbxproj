@@ -1,0 +1,816 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F36486A62B750B6F006150CA /* bunny.obj in Resources */ = {isa = PBXBuildFile; fileRef = F364869D2B750B6F006150CA /* bunny.obj */; };
+		F36486A72B750B6F006150CA /* bunny.obj in Resources */ = {isa = PBXBuildFile; fileRef = F364869D2B750B6F006150CA /* bunny.obj */; };
+		F36486AA2B750B6F006150CA /* MT3DeferredRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F364869F2B750B6F006150CA /* MT3DeferredRenderer.swift */; };
+		F36486AB2B750B6F006150CA /* MT3DeferredRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F364869F2B750B6F006150CA /* MT3DeferredRenderer.swift */; };
+		F36486AE2B750B6F006150CA /* MT3DeferredMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36486A12B750B6F006150CA /* MT3DeferredMetalView.swift */; };
+		F36486AF2B750B6F006150CA /* MT3DeferredMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36486A12B750B6F006150CA /* MT3DeferredMetalView.swift */; };
+		F36486B22B750B6F006150CA /* MT3ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36486A42B750B6F006150CA /* MT3ContentView.swift */; };
+		F36486B32B750B6F006150CA /* MT3ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36486A42B750B6F006150CA /* MT3ContentView.swift */; };
+		F36486B42B750B6F006150CA /* MT3DeferredRendering.metal in Sources */ = {isa = PBXBuildFile; fileRef = F36486A52B750B6F006150CA /* MT3DeferredRendering.metal */; };
+		F36486B52B750B6F006150CA /* MT3DeferredRendering.metal in Sources */ = {isa = PBXBuildFile; fileRef = F36486A52B750B6F006150CA /* MT3DeferredRendering.metal */; };
+		F36486BA2B76010D006150CA /* MTLRenderCommandEncoder+BufferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36486B92B76010D006150CA /* MTLRenderCommandEncoder+BufferView.swift */; };
+		F36486BB2B76010D006150CA /* MTLRenderCommandEncoder+BufferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36486B92B76010D006150CA /* MTLRenderCommandEncoder+BufferView.swift */; };
+		F36486C42B77F8A0006150CA /* MT4DeferredRendering.metal in Sources */ = {isa = PBXBuildFile; fileRef = F36486BE2B77F8A0006150CA /* MT4DeferredRendering.metal */; };
+		F36486C52B77F8A0006150CA /* MT4DeferredRendering.metal in Sources */ = {isa = PBXBuildFile; fileRef = F36486BE2B77F8A0006150CA /* MT4DeferredRendering.metal */; };
+		F36486C62B77F8A0006150CA /* MT4ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36486BF2B77F8A0006150CA /* MT4ContentView.swift */; };
+		F36486C72B77F8A0006150CA /* MT4ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36486BF2B77F8A0006150CA /* MT4ContentView.swift */; };
+		F36486CA2B77F8A0006150CA /* MT4DeferredMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36486C22B77F8A0006150CA /* MT4DeferredMetalView.swift */; };
+		F36486CB2B77F8A0006150CA /* MT4DeferredMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36486C22B77F8A0006150CA /* MT4DeferredMetalView.swift */; };
+		F36486CC2B77F8A0006150CA /* MT4DeferredRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36486C32B77F8A0006150CA /* MT4DeferredRenderer.swift */; };
+		F36486CD2B77F8A0006150CA /* MT4DeferredRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36486C32B77F8A0006150CA /* MT4DeferredRenderer.swift */; };
+		F370178526C2632700AEDDB2 /* TestAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F370178426C2632700AEDDB2 /* TestAssets.xcassets */; };
+		F370178B26C2BA4400AEDDB2 /* CoreImageExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = F370178A26C2BA4400AEDDB2 /* CoreImageExtensions */; };
+		F3A2F48525F0F2330064CB29 /* MT1Simple2DTriangleMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2F48425F0F2330064CB29 /* MT1Simple2DTriangleMetalView.swift */; };
+		F3A2F48625F0F2330064CB29 /* MT1Simple2DTriangleMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2F48425F0F2330064CB29 /* MT1Simple2DTriangleMetalView.swift */; };
+		F3BB6A8725F2689F008A0D9F /* MT1HelloShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = F3BB6A8625F2689F008A0D9F /* MT1HelloShaders.metal */; };
+		F3BB6A8825F2689F008A0D9F /* MT1HelloShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = F3BB6A8625F2689F008A0D9F /* MT1HelloShaders.metal */; };
+		F3C3895825F8C4F0009AC4F2 /* MT2ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C3895725F8C4F0009AC4F2 /* MT2ContentView.swift */; };
+		F3C3895925F8C4F0009AC4F2 /* MT2ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C3895725F8C4F0009AC4F2 /* MT2ContentView.swift */; };
+		F3C3895F25F8C558009AC4F2 /* MT2SampleObjectMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C3895E25F8C558009AC4F2 /* MT2SampleObjectMetalView.swift */; };
+		F3C3896025F8C558009AC4F2 /* MT2SampleObjectMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C3895E25F8C558009AC4F2 /* MT2SampleObjectMetalView.swift */; };
+		F3EDF76625FE15DD00D654BE /* MT2ObjRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3EDF76525FE15DD00D654BE /* MT2ObjRenderer.swift */; };
+		F3EDF76725FE15DD00D654BE /* MT2ObjRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3EDF76525FE15DD00D654BE /* MT2ObjRenderer.swift */; };
+		F3EDF77025FE5A4100D654BE /* MT2SampleObjectShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = F3EDF76F25FE5A4100D654BE /* MT2SampleObjectShaders.metal */; };
+		F3EDF77125FE5A4100D654BE /* MT2SampleObjectShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = F3EDF76F25FE5A4100D654BE /* MT2SampleObjectShaders.metal */; };
+		F3EDF78225FE72F700D654BE /* float4x4+ModelViewProjectionMatrices.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3EDF78125FE72F700D654BE /* float4x4+ModelViewProjectionMatrices.swift */; };
+		F3EDF78325FE72F700D654BE /* float4x4+ModelViewProjectionMatrices.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3EDF78125FE72F700D654BE /* float4x4+ModelViewProjectionMatrices.swift */; };
+		F3F7884F25F0DFF900AE2753 /* MTMetalTutorialsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F7883C25F0DFF600AE2753 /* MTMetalTutorialsApp.swift */; };
+		F3F7885125F0DFF900AE2753 /* MT1ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F7883D25F0DFF600AE2753 /* MT1ContentView.swift */; };
+		F3F7885225F0DFF900AE2753 /* MT1ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F7883D25F0DFF600AE2753 /* MT1ContentView.swift */; };
+		F3F7885325F0DFF900AE2753 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3F7883E25F0DFF900AE2753 /* Assets.xcassets */; };
+		F3F7885425F0DFF900AE2753 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3F7883E25F0DFF900AE2753 /* Assets.xcassets */; };
+		F3F82FBE26A72E70001F426E /* MetalTutorialsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F82FBD26A72E70001F426E /* MetalTutorialsTests.swift */; };
+		F3F82FFD26A8731F001F426E /* MTMetalTutorialsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F7883C25F0DFF600AE2753 /* MTMetalTutorialsApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F3F82FC026A72E70001F426E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F3F7883725F0DFF500AE2753 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F3F7884225F0DFF900AE2753;
+			remoteInfo = "MetalTutorials (iOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F36486842B750A6C006150CA /* MetalTutorials (macOS)-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MetalTutorials (macOS)-Bridging-Header.h"; sourceTree = "<group>"; };
+		F36486852B750A6C006150CA /* MetalTutorials (iOS)-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MetalTutorials (iOS)-Bridging-Header.h"; sourceTree = "<group>"; };
+		F364869D2B750B6F006150CA /* bunny.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bunny.obj; sourceTree = "<group>"; };
+		F364869F2B750B6F006150CA /* MT3DeferredRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MT3DeferredRenderer.swift; sourceTree = "<group>"; };
+		F36486A12B750B6F006150CA /* MT3DeferredMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MT3DeferredMetalView.swift; sourceTree = "<group>"; };
+		F36486A22B750B6F006150CA /* MT3Uniforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MT3Uniforms.h; sourceTree = "<group>"; };
+		F36486A42B750B6F006150CA /* MT3ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MT3ContentView.swift; sourceTree = "<group>"; };
+		F36486A52B750B6F006150CA /* MT3DeferredRendering.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MT3DeferredRendering.metal; sourceTree = "<group>"; };
+		F36486B82B75388B006150CA /* MT3GBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MT3GBuffer.h; sourceTree = "<group>"; };
+		F36486B92B76010D006150CA /* MTLRenderCommandEncoder+BufferView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTLRenderCommandEncoder+BufferView.swift"; sourceTree = "<group>"; };
+		F36486BD2B77F8A0006150CA /* MT4Uniforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MT4Uniforms.h; sourceTree = "<group>"; };
+		F36486BE2B77F8A0006150CA /* MT4DeferredRendering.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MT4DeferredRendering.metal; sourceTree = "<group>"; };
+		F36486BF2B77F8A0006150CA /* MT4ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MT4ContentView.swift; sourceTree = "<group>"; };
+		F36486C02B77F8A0006150CA /* MT4RenderTargets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MT4RenderTargets.h; sourceTree = "<group>"; };
+		F36486C22B77F8A0006150CA /* MT4DeferredMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MT4DeferredMetalView.swift; sourceTree = "<group>"; };
+		F36486C32B77F8A0006150CA /* MT4DeferredRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MT4DeferredRenderer.swift; sourceTree = "<group>"; };
+		F370178426C2632700AEDDB2 /* TestAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TestAssets.xcassets; sourceTree = "<group>"; };
+		F3A2F48425F0F2330064CB29 /* MT1Simple2DTriangleMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MT1Simple2DTriangleMetalView.swift; sourceTree = "<group>"; };
+		F3BB6A8625F2689F008A0D9F /* MT1HelloShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MT1HelloShaders.metal; sourceTree = "<group>"; };
+		F3C3895725F8C4F0009AC4F2 /* MT2ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MT2ContentView.swift; path = "Shared/Tutorial 2 - Sample Object/MT2ContentView.swift"; sourceTree = SOURCE_ROOT; };
+		F3C3895E25F8C558009AC4F2 /* MT2SampleObjectMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MT2SampleObjectMetalView.swift; path = "Shared/Tutorial 2 - Sample Object/MT2SampleObjectMetalView.swift"; sourceTree = SOURCE_ROOT; };
+		F3EDF76525FE15DD00D654BE /* MT2ObjRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MT2ObjRenderer.swift; sourceTree = "<group>"; };
+		F3EDF76F25FE5A4100D654BE /* MT2SampleObjectShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MT2SampleObjectShaders.metal; sourceTree = "<group>"; };
+		F3EDF77625FE685300D654BE /* MT2Uniforms.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MT2Uniforms.h; sourceTree = "<group>"; };
+		F3EDF78125FE72F700D654BE /* float4x4+ModelViewProjectionMatrices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "float4x4+ModelViewProjectionMatrices.swift"; sourceTree = "<group>"; };
+		F3F7883C25F0DFF600AE2753 /* MTMetalTutorialsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTMetalTutorialsApp.swift; sourceTree = "<group>"; };
+		F3F7883D25F0DFF600AE2753 /* MT1ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MT1ContentView.swift; sourceTree = "<group>"; };
+		F3F7883E25F0DFF900AE2753 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F3F7884325F0DFF900AE2753 /* MetalTutorials.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalTutorials.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3F7884625F0DFF900AE2753 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F3F7884B25F0DFF900AE2753 /* MetalTutorials.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalTutorials.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3F7884D25F0DFF900AE2753 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F3F7884E25F0DFF900AE2753 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
+		F3F82FBB26A72E70001F426E /* MetalTutorialsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MetalTutorialsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3F82FBD26A72E70001F426E /* MetalTutorialsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalTutorialsTests.swift; sourceTree = "<group>"; };
+		F3F82FBF26A72E70001F426E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F3FD124325F554FF0045626A /* MT1Vertex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MT1Vertex.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F3F7884025F0DFF900AE2753 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3F7884825F0DFF900AE2753 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3F82FB826A72E70001F426E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F370178B26C2BA4400AEDDB2 /* CoreImageExtensions in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F364869B2B750B6F006150CA /* Tutorial 3 - Deferred Rendering Object */ = {
+			isa = PBXGroup;
+			children = (
+				F364869F2B750B6F006150CA /* MT3DeferredRenderer.swift */,
+				F36486A12B750B6F006150CA /* MT3DeferredMetalView.swift */,
+				F36486A22B750B6F006150CA /* MT3Uniforms.h */,
+				F36486A42B750B6F006150CA /* MT3ContentView.swift */,
+				F36486A52B750B6F006150CA /* MT3DeferredRendering.metal */,
+				F36486B82B75388B006150CA /* MT3GBuffer.h */,
+			);
+			path = "Tutorial 3 - Deferred Rendering Object";
+			sourceTree = "<group>";
+		};
+		F364869C2B750B6F006150CA /* Obj */ = {
+			isa = PBXGroup;
+			children = (
+				F364869D2B750B6F006150CA /* bunny.obj */,
+			);
+			path = Obj;
+			sourceTree = "<group>";
+		};
+		F36486B62B75249A006150CA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F364869C2B750B6F006150CA /* Obj */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		F36486B72B7525A3006150CA /* Extension from T2 */ = {
+			isa = PBXGroup;
+			children = (
+				F3EDF78125FE72F700D654BE /* float4x4+ModelViewProjectionMatrices.swift */,
+				F36486B92B76010D006150CA /* MTLRenderCommandEncoder+BufferView.swift */,
+			);
+			path = "Extension from T2";
+			sourceTree = "<group>";
+		};
+		F36486BC2B77F8A0006150CA /* Tutorial 4 - Shadows */ = {
+			isa = PBXGroup;
+			children = (
+				F36486BD2B77F8A0006150CA /* MT4Uniforms.h */,
+				F36486BE2B77F8A0006150CA /* MT4DeferredRendering.metal */,
+				F36486BF2B77F8A0006150CA /* MT4ContentView.swift */,
+				F36486C02B77F8A0006150CA /* MT4RenderTargets.h */,
+				F36486C22B77F8A0006150CA /* MT4DeferredMetalView.swift */,
+				F36486C32B77F8A0006150CA /* MT4DeferredRenderer.swift */,
+			);
+			path = "Tutorial 4 - Shadows";
+			sourceTree = "<group>";
+		};
+		F396A72125F78C7A0000E288 /* Tutorial 2 - Sample Object */ = {
+			isa = PBXGroup;
+			children = (
+				F3C3895E25F8C558009AC4F2 /* MT2SampleObjectMetalView.swift */,
+				F3EDF76525FE15DD00D654BE /* MT2ObjRenderer.swift */,
+				F3EDF77625FE685300D654BE /* MT2Uniforms.h */,
+				F3EDF76F25FE5A4100D654BE /* MT2SampleObjectShaders.metal */,
+				F3C3895725F8C4F0009AC4F2 /* MT2ContentView.swift */,
+			);
+			path = "Tutorial 2 - Sample Object";
+			sourceTree = "<group>";
+		};
+		F3F7883625F0DFF500AE2753 = {
+			isa = PBXGroup;
+			children = (
+				F3F7883B25F0DFF600AE2753 /* Shared */,
+				F3F7884525F0DFF900AE2753 /* iOS */,
+				F3F7884C25F0DFF900AE2753 /* macOS */,
+				F3F82FBC26A72E70001F426E /* MetalTutorialsTests */,
+				F3F7884425F0DFF900AE2753 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F3F7883B25F0DFF600AE2753 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				F36486852B750A6C006150CA /* MetalTutorials (iOS)-Bridging-Header.h */,
+				F36486842B750A6C006150CA /* MetalTutorials (macOS)-Bridging-Header.h */,
+				F36486B72B7525A3006150CA /* Extension from T2 */,
+				F36486B62B75249A006150CA /* Resources */,
+				F36486BC2B77F8A0006150CA /* Tutorial 4 - Shadows */,
+				F364869B2B750B6F006150CA /* Tutorial 3 - Deferred Rendering Object */,
+				F396A72125F78C7A0000E288 /* Tutorial 2 - Sample Object */,
+				F3F7885F25F0E65600AE2753 /* Tutorial 1 - Hello */,
+				F3F7883C25F0DFF600AE2753 /* MTMetalTutorialsApp.swift */,
+				F3F7883E25F0DFF900AE2753 /* Assets.xcassets */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		F3F7884425F0DFF900AE2753 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F3F7884325F0DFF900AE2753 /* MetalTutorials.app */,
+				F3F7884B25F0DFF900AE2753 /* MetalTutorials.app */,
+				F3F82FBB26A72E70001F426E /* MetalTutorialsTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F3F7884525F0DFF900AE2753 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				F3F7884625F0DFF900AE2753 /* Info.plist */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		F3F7884C25F0DFF900AE2753 /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+				F3F7884D25F0DFF900AE2753 /* Info.plist */,
+				F3F7884E25F0DFF900AE2753 /* macOS.entitlements */,
+			);
+			path = macOS;
+			sourceTree = "<group>";
+		};
+		F3F7885F25F0E65600AE2753 /* Tutorial 1 - Hello */ = {
+			isa = PBXGroup;
+			children = (
+				F3F7883D25F0DFF600AE2753 /* MT1ContentView.swift */,
+				F3FD124325F554FF0045626A /* MT1Vertex.h */,
+				F3A2F48425F0F2330064CB29 /* MT1Simple2DTriangleMetalView.swift */,
+				F3BB6A8625F2689F008A0D9F /* MT1HelloShaders.metal */,
+			);
+			path = "Tutorial 1 - Hello";
+			sourceTree = "<group>";
+		};
+		F3F82FBC26A72E70001F426E /* MetalTutorialsTests */ = {
+			isa = PBXGroup;
+			children = (
+				F3F82FBD26A72E70001F426E /* MetalTutorialsTests.swift */,
+				F370178426C2632700AEDDB2 /* TestAssets.xcassets */,
+				F3F82FBF26A72E70001F426E /* Info.plist */,
+			);
+			path = MetalTutorialsTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F3F7884225F0DFF900AE2753 /* MetalTutorials (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F3F7885725F0DFF900AE2753 /* Build configuration list for PBXNativeTarget "MetalTutorials (iOS)" */;
+			buildPhases = (
+				F3F7883F25F0DFF900AE2753 /* Sources */,
+				F3F7884025F0DFF900AE2753 /* Frameworks */,
+				F3F7884125F0DFF900AE2753 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MetalTutorials (iOS)";
+			productName = "MetalTutorials (iOS)";
+			productReference = F3F7884325F0DFF900AE2753 /* MetalTutorials.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F3F7884A25F0DFF900AE2753 /* MetalTutorials (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F3F7885A25F0DFF900AE2753 /* Build configuration list for PBXNativeTarget "MetalTutorials (macOS)" */;
+			buildPhases = (
+				F3F7884725F0DFF900AE2753 /* Sources */,
+				F3F7884825F0DFF900AE2753 /* Frameworks */,
+				F3F7884925F0DFF900AE2753 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MetalTutorials (macOS)";
+			productName = "MetalTutorials (macOS)";
+			productReference = F3F7884B25F0DFF900AE2753 /* MetalTutorials.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F3F82FBA26A72E70001F426E /* MetalTutorialsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F3F82FC426A72E70001F426E /* Build configuration list for PBXNativeTarget "MetalTutorialsTests" */;
+			buildPhases = (
+				F3F82FB726A72E70001F426E /* Sources */,
+				F3F82FB826A72E70001F426E /* Frameworks */,
+				F3F82FB926A72E70001F426E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F3F82FC126A72E70001F426E /* PBXTargetDependency */,
+			);
+			name = MetalTutorialsTests;
+			packageProductDependencies = (
+				F370178A26C2BA4400AEDDB2 /* CoreImageExtensions */,
+			);
+			productName = MetalTutorialsTests;
+			productReference = F3F82FBB26A72E70001F426E /* MetalTutorialsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F3F7883725F0DFF500AE2753 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1520;
+				TargetAttributes = {
+					F3F7884225F0DFF900AE2753 = {
+						CreatedOnToolsVersion = 12.4;
+						LastSwiftMigration = 1240;
+					};
+					F3F7884A25F0DFF900AE2753 = {
+						CreatedOnToolsVersion = 12.4;
+						LastSwiftMigration = 1240;
+					};
+					F3F82FBA26A72E70001F426E = {
+						CreatedOnToolsVersion = 12.4;
+						TestTargetID = F3F7884225F0DFF900AE2753;
+					};
+				};
+			};
+			buildConfigurationList = F3F7883A25F0DFF500AE2753 /* Build configuration list for PBXProject "MetalTutorials" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F3F7883625F0DFF500AE2753;
+			packageReferences = (
+				F370178926C2BA4400AEDDB2 /* XCRemoteSwiftPackageReference "CoreImageExtensions" */,
+			);
+			productRefGroup = F3F7884425F0DFF900AE2753 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F3F7884225F0DFF900AE2753 /* MetalTutorials (iOS) */,
+				F3F7884A25F0DFF900AE2753 /* MetalTutorials (macOS) */,
+				F3F82FBA26A72E70001F426E /* MetalTutorialsTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F3F7884125F0DFF900AE2753 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3F7885325F0DFF900AE2753 /* Assets.xcassets in Resources */,
+				F36486A62B750B6F006150CA /* bunny.obj in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3F7884925F0DFF900AE2753 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3F7885425F0DFF900AE2753 /* Assets.xcassets in Resources */,
+				F36486A72B750B6F006150CA /* bunny.obj in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3F82FB926A72E70001F426E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F370178526C2632700AEDDB2 /* TestAssets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F3F7883F25F0DFF900AE2753 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3BB6A8725F2689F008A0D9F /* MT1HelloShaders.metal in Sources */,
+				F3EDF78225FE72F700D654BE /* float4x4+ModelViewProjectionMatrices.swift in Sources */,
+				F36486B22B750B6F006150CA /* MT3ContentView.swift in Sources */,
+				F36486CA2B77F8A0006150CA /* MT4DeferredMetalView.swift in Sources */,
+				F3F7885125F0DFF900AE2753 /* MT1ContentView.swift in Sources */,
+				F36486AE2B750B6F006150CA /* MT3DeferredMetalView.swift in Sources */,
+				F3C3895F25F8C558009AC4F2 /* MT2SampleObjectMetalView.swift in Sources */,
+				F3EDF77025FE5A4100D654BE /* MT2SampleObjectShaders.metal in Sources */,
+				F3F7884F25F0DFF900AE2753 /* MTMetalTutorialsApp.swift in Sources */,
+				F36486BA2B76010D006150CA /* MTLRenderCommandEncoder+BufferView.swift in Sources */,
+				F36486C42B77F8A0006150CA /* MT4DeferredRendering.metal in Sources */,
+				F36486C62B77F8A0006150CA /* MT4ContentView.swift in Sources */,
+				F3A2F48525F0F2330064CB29 /* MT1Simple2DTriangleMetalView.swift in Sources */,
+				F3EDF76625FE15DD00D654BE /* MT2ObjRenderer.swift in Sources */,
+				F3C3895825F8C4F0009AC4F2 /* MT2ContentView.swift in Sources */,
+				F36486B42B750B6F006150CA /* MT3DeferredRendering.metal in Sources */,
+				F36486CC2B77F8A0006150CA /* MT4DeferredRenderer.swift in Sources */,
+				F36486AA2B750B6F006150CA /* MT3DeferredRenderer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3F7884725F0DFF900AE2753 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3BB6A8825F2689F008A0D9F /* MT1HelloShaders.metal in Sources */,
+				F3EDF78325FE72F700D654BE /* float4x4+ModelViewProjectionMatrices.swift in Sources */,
+				F36486B32B750B6F006150CA /* MT3ContentView.swift in Sources */,
+				F36486CB2B77F8A0006150CA /* MT4DeferredMetalView.swift in Sources */,
+				F3F7885225F0DFF900AE2753 /* MT1ContentView.swift in Sources */,
+				F36486AF2B750B6F006150CA /* MT3DeferredMetalView.swift in Sources */,
+				F3C3896025F8C558009AC4F2 /* MT2SampleObjectMetalView.swift in Sources */,
+				F3EDF77125FE5A4100D654BE /* MT2SampleObjectShaders.metal in Sources */,
+				F3F82FFD26A8731F001F426E /* MTMetalTutorialsApp.swift in Sources */,
+				F36486BB2B76010D006150CA /* MTLRenderCommandEncoder+BufferView.swift in Sources */,
+				F36486C52B77F8A0006150CA /* MT4DeferredRendering.metal in Sources */,
+				F36486C72B77F8A0006150CA /* MT4ContentView.swift in Sources */,
+				F3A2F48625F0F2330064CB29 /* MT1Simple2DTriangleMetalView.swift in Sources */,
+				F3EDF76725FE15DD00D654BE /* MT2ObjRenderer.swift in Sources */,
+				F3C3895925F8C4F0009AC4F2 /* MT2ContentView.swift in Sources */,
+				F36486B52B750B6F006150CA /* MT3DeferredRendering.metal in Sources */,
+				F36486CD2B77F8A0006150CA /* MT4DeferredRenderer.swift in Sources */,
+				F36486AB2B750B6F006150CA /* MT3DeferredRenderer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3F82FB726A72E70001F426E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3F82FBE26A72E70001F426E /* MetalTutorialsTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F3F82FC126A72E70001F426E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F3F7884225F0DFF900AE2753 /* MetalTutorials (iOS) */;
+			targetProxy = F3F82FC026A72E70001F426E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F3F7885525F0DFF900AE2753 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
+			};
+			name = Debug;
+		};
+		F3F7885625F0DFF900AE2753 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
+			};
+			name = Release;
+		};
+		F3F7885825F0DFF900AE2753 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2CC2HNKH42;
+				ENABLE_PREVIEWS = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fe0437.MetalTutorials;
+				PRODUCT_NAME = MetalTutorials;
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Shared/MetalTutorials (iOS)-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F3F7885925F0DFF900AE2753 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2CC2HNKH42;
+				ENABLE_PREVIEWS = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fe0437.MetalTutorials;
+				PRODUCT_NAME = MetalTutorials;
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Shared/MetalTutorials (iOS)-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F3F7885B25F0DFF900AE2753 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 2CC2HNKH42;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fe0437.MetalTutorials;
+				PRODUCT_NAME = MetalTutorials;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "Shared/MetalTutorials (macOS)-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F3F7885C25F0DFF900AE2753 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 2CC2HNKH42;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fe0437.MetalTutorials;
+				PRODUCT_NAME = MetalTutorials;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "Shared/MetalTutorials (macOS)-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		F3F82FC226A72E70001F426E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2CC2HNKH42;
+				INFOPLIST_FILE = MetalTutorialsTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fe0437.MetalTutorialsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MetalTutorials.app/MetalTutorials";
+			};
+			name = Debug;
+		};
+		F3F82FC326A72E70001F426E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2CC2HNKH42;
+				INFOPLIST_FILE = MetalTutorialsTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fe0437.MetalTutorialsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MetalTutorials.app/MetalTutorials";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F3F7883A25F0DFF500AE2753 /* Build configuration list for PBXProject "MetalTutorials" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F3F7885525F0DFF900AE2753 /* Debug */,
+				F3F7885625F0DFF900AE2753 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F3F7885725F0DFF900AE2753 /* Build configuration list for PBXNativeTarget "MetalTutorials (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F3F7885825F0DFF900AE2753 /* Debug */,
+				F3F7885925F0DFF900AE2753 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F3F7885A25F0DFF900AE2753 /* Build configuration list for PBXNativeTarget "MetalTutorials (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F3F7885B25F0DFF900AE2753 /* Debug */,
+				F3F7885C25F0DFF900AE2753 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F3F82FC426A72E70001F426E /* Build configuration list for PBXNativeTarget "MetalTutorialsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F3F82FC226A72E70001F426E /* Debug */,
+				F3F82FC326A72E70001F426E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F370178926C2BA4400AEDDB2 /* XCRemoteSwiftPackageReference "CoreImageExtensions" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/DigitalMasterpieces/CoreImageExtensions.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F370178A26C2BA4400AEDDB2 /* CoreImageExtensions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F370178926C2BA4400AEDDB2 /* XCRemoteSwiftPackageReference "CoreImageExtensions" */;
+			productName = CoreImageExtensions;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = F3F7883725F0DFF500AE2753 /* Project object */;
+}

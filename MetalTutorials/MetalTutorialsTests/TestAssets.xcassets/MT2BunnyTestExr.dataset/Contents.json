@@ -1,0 +1,13 @@
+{
+  "data" : [
+    {
+      "filename" : "MT2BunnyTest.exr",
+      "idiom" : "universal",
+      "universal-type-identifier" : "exr"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
