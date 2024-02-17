@@ -11,7 +11,7 @@ import SwiftUI
 struct MetalTutorialsApp: App {
     var body: some Scene {
         WindowGroup {
-            MT4ContentView()
+            MT5ContentView()
         }
     }
 }

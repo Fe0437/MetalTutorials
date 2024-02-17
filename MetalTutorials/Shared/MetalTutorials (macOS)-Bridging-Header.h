@@ -11,3 +11,6 @@
 
 #import "MT4Uniforms.h"
 #import "MT4RenderTargets.h"
+
+#import "MT5Uniforms.h"
+#import "MT5RenderTargets.h"

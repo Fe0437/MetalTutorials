@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F350DD2B2B8113340061C516 /* MT5ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F350DD232B8113340061C516 /* MT5ContentView.swift */; };
+		F350DD2C2B8113340061C516 /* MT5ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F350DD232B8113340061C516 /* MT5ContentView.swift */; };
+		F350DD2D2B8113340061C516 /* MT5DeferredRendering.metal in Sources */ = {isa = PBXBuildFile; fileRef = F350DD242B8113340061C516 /* MT5DeferredRendering.metal */; };
+		F350DD2E2B8113340061C516 /* MT5DeferredRendering.metal in Sources */ = {isa = PBXBuildFile; fileRef = F350DD242B8113340061C516 /* MT5DeferredRendering.metal */; };
+		F350DD312B8113340061C516 /* MT5DeferredMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F350DD282B8113340061C516 /* MT5DeferredMetalView.swift */; };
+		F350DD322B8113340061C516 /* MT5DeferredMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F350DD282B8113340061C516 /* MT5DeferredMetalView.swift */; };
+		F350DD332B8113340061C516 /* MT5TiledDeferredRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F350DD292B8113340061C516 /* MT5TiledDeferredRenderer.swift */; };
+		F350DD342B8113340061C516 /* MT5TiledDeferredRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F350DD292B8113340061C516 /* MT5TiledDeferredRenderer.swift */; };
 		F36486A62B750B6F006150CA /* bunny.obj in Resources */ = {isa = PBXBuildFile; fileRef = F364869D2B750B6F006150CA /* bunny.obj */; };
 		F36486A72B750B6F006150CA /* bunny.obj in Resources */ = {isa = PBXBuildFile; fileRef = F364869D2B750B6F006150CA /* bunny.obj */; };
 		F36486AA2B750B6F006150CA /* MT3DeferredRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F364869F2B750B6F006150CA /* MT3DeferredRenderer.swift */; };
@@ -63,6 +71,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F350DD232B8113340061C516 /* MT5ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MT5ContentView.swift; sourceTree = "<group>"; };
+		F350DD242B8113340061C516 /* MT5DeferredRendering.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MT5DeferredRendering.metal; sourceTree = "<group>"; };
+		F350DD252B8113340061C516 /* MT5Uniforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MT5Uniforms.h; sourceTree = "<group>"; };
+		F350DD272B8113340061C516 /* MT5RenderTargets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MT5RenderTargets.h; sourceTree = "<group>"; };
+		F350DD282B8113340061C516 /* MT5DeferredMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MT5DeferredMetalView.swift; sourceTree = "<group>"; };
+		F350DD292B8113340061C516 /* MT5TiledDeferredRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MT5TiledDeferredRenderer.swift; sourceTree = "<group>"; };
 		F36486842B750A6C006150CA /* MetalTutorials (macOS)-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MetalTutorials (macOS)-Bridging-Header.h"; sourceTree = "<group>"; };
 		F36486852B750A6C006150CA /* MetalTutorials (iOS)-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MetalTutorials (iOS)-Bridging-Header.h"; sourceTree = "<group>"; };
 		F364869D2B750B6F006150CA /* bunny.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bunny.obj; sourceTree = "<group>"; };
@@ -128,6 +142,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F350DD222B8113340061C516 /* Tutorial 5 - Tiled Rendering */ = {
+			isa = PBXGroup;
+			children = (
+				F350DD232B8113340061C516 /* MT5ContentView.swift */,
+				F350DD242B8113340061C516 /* MT5DeferredRendering.metal */,
+				F350DD252B8113340061C516 /* MT5Uniforms.h */,
+				F350DD272B8113340061C516 /* MT5RenderTargets.h */,
+				F350DD282B8113340061C516 /* MT5DeferredMetalView.swift */,
+				F350DD292B8113340061C516 /* MT5TiledDeferredRenderer.swift */,
+			);
+			path = "Tutorial 5 - Tiled Rendering";
+			sourceTree = "<group>";
+		};
 		F364869B2B750B6F006150CA /* Tutorial 3 - Deferred Rendering Object */ = {
 			isa = PBXGroup;
 			children = (
@@ -209,6 +236,7 @@
 				F36486842B750A6C006150CA /* MetalTutorials (macOS)-Bridging-Header.h */,
 				F36486B72B7525A3006150CA /* Extension from T2 */,
 				F36486B62B75249A006150CA /* Resources */,
+				F350DD222B8113340061C516 /* Tutorial 5 - Tiled Rendering */,
 				F36486BC2B77F8A0006150CA /* Tutorial 4 - Shadows */,
 				F364869B2B750B6F006150CA /* Tutorial 3 - Deferred Rendering Object */,
 				F396A72125F78C7A0000E288 /* Tutorial 2 - Sample Object */,
@@ -408,8 +436,10 @@
 			files = (
 				F3BB6A8725F2689F008A0D9F /* MT1HelloShaders.metal in Sources */,
 				F3EDF78225FE72F700D654BE /* float4x4+ModelViewProjectionMatrices.swift in Sources */,
+				F350DD312B8113340061C516 /* MT5DeferredMetalView.swift in Sources */,
 				F36486B22B750B6F006150CA /* MT3ContentView.swift in Sources */,
 				F36486CA2B77F8A0006150CA /* MT4DeferredMetalView.swift in Sources */,
+				F350DD2D2B8113340061C516 /* MT5DeferredRendering.metal in Sources */,
 				F3F7885125F0DFF900AE2753 /* MT1ContentView.swift in Sources */,
 				F36486AE2B750B6F006150CA /* MT3DeferredMetalView.swift in Sources */,
 				F3C3895F25F8C558009AC4F2 /* MT2SampleObjectMetalView.swift in Sources */,
@@ -424,6 +454,8 @@
 				F36486B42B750B6F006150CA /* MT3DeferredRendering.metal in Sources */,
 				F36486CC2B77F8A0006150CA /* MT4DeferredRenderer.swift in Sources */,
 				F36486AA2B750B6F006150CA /* MT3DeferredRenderer.swift in Sources */,
+				F350DD332B8113340061C516 /* MT5TiledDeferredRenderer.swift in Sources */,
+				F350DD2B2B8113340061C516 /* MT5ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,8 +465,10 @@
 			files = (
 				F3BB6A8825F2689F008A0D9F /* MT1HelloShaders.metal in Sources */,
 				F3EDF78325FE72F700D654BE /* float4x4+ModelViewProjectionMatrices.swift in Sources */,
+				F350DD322B8113340061C516 /* MT5DeferredMetalView.swift in Sources */,
 				F36486B32B750B6F006150CA /* MT3ContentView.swift in Sources */,
 				F36486CB2B77F8A0006150CA /* MT4DeferredMetalView.swift in Sources */,
+				F350DD2E2B8113340061C516 /* MT5DeferredRendering.metal in Sources */,
 				F3F7885225F0DFF900AE2753 /* MT1ContentView.swift in Sources */,
 				F36486AF2B750B6F006150CA /* MT3DeferredMetalView.swift in Sources */,
 				F3C3896025F8C558009AC4F2 /* MT2SampleObjectMetalView.swift in Sources */,
@@ -449,6 +483,8 @@
 				F36486B52B750B6F006150CA /* MT3DeferredRendering.metal in Sources */,
 				F36486CD2B77F8A0006150CA /* MT4DeferredRenderer.swift in Sources */,
 				F36486AB2B750B6F006150CA /* MT3DeferredRenderer.swift in Sources */,
+				F350DD342B8113340061C516 /* MT5TiledDeferredRenderer.swift in Sources */,
+				F350DD2C2B8113340061C516 /* MT5ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
