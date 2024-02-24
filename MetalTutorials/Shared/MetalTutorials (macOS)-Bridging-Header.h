@@ -14,3 +14,6 @@
 
 #import "MT5Uniforms.h"
 #import "MT5RenderTargets.h"
+
+#import "MT6Uniforms.h"
+#import "MT6RenderTargets.h"

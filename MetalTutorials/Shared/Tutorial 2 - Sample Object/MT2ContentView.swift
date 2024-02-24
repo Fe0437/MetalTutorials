@@ -9,8 +9,8 @@ import SwiftUI
 
 struct MT2ContentView: View {
     var body: some View {
-        MT2SampleObjectMetalView()
-            .navigationTitle("Tutorial 2")
+        MT2SampleObjectMetalView(objName: "bunny")
+            .navigationTitle("Tutorial 2!")
     }
 }
 

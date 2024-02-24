@@ -1,5 +1,5 @@
 //
-//  MetalViewController.swift
+//  MT3DeferredMetalView.swift
 //  MetalTutorials
 //
 //  Created by federico forti on 04/03/2021.
@@ -9,15 +9,16 @@ import SwiftUI
 import MetalKit
 import UIKit
 
-/**
- 
- */
+/// 👥🖼️: UIViewRepresentable that creates a MTKView and a MT3DeferredRenderer to render a 3D object.
 struct MT3DeferredMetalView: UIViewRepresentable {
     typealias UIViewType = MTKView
     
     /// create the mtkview when you create this view
-    init() {
-        mtkView = MTKView()
+    /// Parameters:
+    /// - objName: the name of the .obj file to load and render
+    init(objName: String) {
+        self.mtkView = MTKView()
+        self.objName = objName
 
         guard let device = MTLCreateSystemDefaultDevice() else {
             fatalError( "Failed to get the system's default Metal device." )
@@ -41,8 +42,14 @@ struct MT3DeferredMetalView: UIViewRepresentable {
     
     /// the coordinator is our renderer that manages drawing on the metalview
     func makeCoordinator() -> MT3DeferredRenderer {
-        return MT3DeferredRenderer(metalView: mtkView, objName: "bunny")
+        return MT3DeferredRenderer(metalView: mtkView, objName: objName)
     }
+
+    /// tutorial 2 - Sample object
+
+    let objName:String
+    
+    /// tutorial 1 - Hello
     
     let mtkView:MTKView!
 }

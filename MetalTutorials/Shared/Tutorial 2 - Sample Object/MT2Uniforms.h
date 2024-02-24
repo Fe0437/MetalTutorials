@@ -10,6 +10,11 @@
 
 #include <simd/simd.h>
 
+/// tutorial 2 - Sample Object
+/// Introducing the uniforms which store the matrices to render the object on the screen
+/// and the light position which is used in the fragment shader to calculate the light.
+
+/// The vertex shader will use the modelViewMatrix to transform the vertices from model space to view space.
 struct MT2VertexUniforms
 {
     matrix_float4x4 modelViewMatrix;
@@ -17,6 +22,7 @@ struct MT2VertexUniforms
     matrix_float4x4 modelViewProjectionMatrix;
 };
 
+/// The fragment shader will use the viewLightPosition to calculate the light.
 struct MT2FragmentUniforms
 {
     simd_float4 viewLightPosition;

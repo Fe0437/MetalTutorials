@@ -11,12 +11,16 @@
 namespace MT2 {
     using namespace metal;
     
+    /// vertex data taken by the vertex shader
+    /// TODO: attribute meaning
     struct VertexIn {
         float3 position  [[attribute(0)]];
         float3 normal    [[attribute(1)]];
         float2 texCoords [[attribute(2)]];
     };
     
+    /// vertex shader output data
+    /// TODO: position attribute meaning
     struct VertexOut {
         float4 clipSpacePosition [[position]];
         float3 viewNormal;
@@ -24,8 +28,9 @@ namespace MT2 {
         float2 texCoords;
     };
     
-    /// [[stage_in]] to signify that it is built for us by loading data according to the vertex descriptor
-    /// second parameter is a reference to an instance of the Uniforms struct, which will hold the matrices we use to transform our vertices
+    /// vertex shader transforming the vertex data passed
+    /// - Parameter vertexIn: [[stage_in]] to signify that it is built for us by loading data according to the vertex descriptor
+    /// - parameter uniforms: second parameter is a reference to an instance of the Uniforms struct, which will hold the matrices we use to transform our vertices
     vertex VertexOut vertex_main(VertexIn vertexIn [[stage_in]],
                                      constant MT2VertexUniforms &uniforms [[buffer(1)]])
     {
@@ -82,6 +87,9 @@ namespace MT2 {
         
     }
     
+    /// fragment shader that computes the lighting using the GGX BRDF 
+    /// Parameter fragmentIn: takes the output from the vertex shader after the rasterization
+    /// Parameter uniforms: contains the light position used to render the object
     fragment float4 fragment_main(VertexOut fragmentIn [[stage_in]],
                                       constant MT2FragmentUniforms &uniforms [[buffer(1)]]) {
         

@@ -45,6 +45,14 @@
 		F3C3895925F8C4F0009AC4F2 /* MT2ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C3895725F8C4F0009AC4F2 /* MT2ContentView.swift */; };
 		F3C3895F25F8C558009AC4F2 /* MT2SampleObjectMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C3895E25F8C558009AC4F2 /* MT2SampleObjectMetalView.swift */; };
 		F3C3896025F8C558009AC4F2 /* MT2SampleObjectMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C3895E25F8C558009AC4F2 /* MT2SampleObjectMetalView.swift */; };
+		F3CED4FE2B86917D00E92B10 /* MT6GPUDeferredRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CED4F82B86917D00E92B10 /* MT6GPUDeferredRenderer.swift */; };
+		F3CED4FF2B86917D00E92B10 /* MT6GPUDeferredRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CED4F82B86917D00E92B10 /* MT6GPUDeferredRenderer.swift */; };
+		F3CED5002B86917D00E92B10 /* MT6DeferredRendering.metal in Sources */ = {isa = PBXBuildFile; fileRef = F3CED4F92B86917D00E92B10 /* MT6DeferredRendering.metal */; };
+		F3CED5012B86917D00E92B10 /* MT6DeferredRendering.metal in Sources */ = {isa = PBXBuildFile; fileRef = F3CED4F92B86917D00E92B10 /* MT6DeferredRendering.metal */; };
+		F3CED5022B86917D00E92B10 /* MT6GPUDeferredMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CED4FB2B86917D00E92B10 /* MT6GPUDeferredMetalView.swift */; };
+		F3CED5032B86917D00E92B10 /* MT6GPUDeferredMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CED4FB2B86917D00E92B10 /* MT6GPUDeferredMetalView.swift */; };
+		F3CED5062B86917D00E92B10 /* MT6ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CED4FD2B86917D00E92B10 /* MT6ContentView.swift */; };
+		F3CED5072B86917D00E92B10 /* MT6ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CED4FD2B86917D00E92B10 /* MT6ContentView.swift */; };
 		F3EDF76625FE15DD00D654BE /* MT2ObjRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3EDF76525FE15DD00D654BE /* MT2ObjRenderer.swift */; };
 		F3EDF76725FE15DD00D654BE /* MT2ObjRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3EDF76525FE15DD00D654BE /* MT2ObjRenderer.swift */; };
 		F3EDF77025FE5A4100D654BE /* MT2SampleObjectShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = F3EDF76F25FE5A4100D654BE /* MT2SampleObjectShaders.metal */; };
@@ -98,6 +106,12 @@
 		F3BB6A8625F2689F008A0D9F /* MT1HelloShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MT1HelloShaders.metal; sourceTree = "<group>"; };
 		F3C3895725F8C4F0009AC4F2 /* MT2ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MT2ContentView.swift; path = "Shared/Tutorial 2 - Sample Object/MT2ContentView.swift"; sourceTree = SOURCE_ROOT; };
 		F3C3895E25F8C558009AC4F2 /* MT2SampleObjectMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MT2SampleObjectMetalView.swift; path = "Shared/Tutorial 2 - Sample Object/MT2SampleObjectMetalView.swift"; sourceTree = SOURCE_ROOT; };
+		F3CED4F72B86917D00E92B10 /* MT6RenderTargets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MT6RenderTargets.h; sourceTree = "<group>"; };
+		F3CED4F82B86917D00E92B10 /* MT6GPUDeferredRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MT6GPUDeferredRenderer.swift; sourceTree = "<group>"; };
+		F3CED4F92B86917D00E92B10 /* MT6DeferredRendering.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MT6DeferredRendering.metal; sourceTree = "<group>"; };
+		F3CED4FA2B86917D00E92B10 /* MT6Uniforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MT6Uniforms.h; sourceTree = "<group>"; };
+		F3CED4FB2B86917D00E92B10 /* MT6GPUDeferredMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MT6GPUDeferredMetalView.swift; sourceTree = "<group>"; };
+		F3CED4FD2B86917D00E92B10 /* MT6ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MT6ContentView.swift; sourceTree = "<group>"; };
 		F3EDF76525FE15DD00D654BE /* MT2ObjRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MT2ObjRenderer.swift; sourceTree = "<group>"; };
 		F3EDF76F25FE5A4100D654BE /* MT2SampleObjectShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MT2SampleObjectShaders.metal; sourceTree = "<group>"; };
 		F3EDF77625FE685300D654BE /* MT2Uniforms.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MT2Uniforms.h; sourceTree = "<group>"; };
@@ -218,6 +232,19 @@
 			path = "Tutorial 2 - Sample Object";
 			sourceTree = "<group>";
 		};
+		F3CED4F62B86917D00E92B10 /* Tutorial 6 - GPU Rendering */ = {
+			isa = PBXGroup;
+			children = (
+				F3CED4F72B86917D00E92B10 /* MT6RenderTargets.h */,
+				F3CED4F82B86917D00E92B10 /* MT6GPUDeferredRenderer.swift */,
+				F3CED4F92B86917D00E92B10 /* MT6DeferredRendering.metal */,
+				F3CED4FA2B86917D00E92B10 /* MT6Uniforms.h */,
+				F3CED4FB2B86917D00E92B10 /* MT6GPUDeferredMetalView.swift */,
+				F3CED4FD2B86917D00E92B10 /* MT6ContentView.swift */,
+			);
+			path = "Tutorial 6 - GPU Rendering";
+			sourceTree = "<group>";
+		};
 		F3F7883625F0DFF500AE2753 = {
 			isa = PBXGroup;
 			children = (
@@ -236,6 +263,7 @@
 				F36486842B750A6C006150CA /* MetalTutorials (macOS)-Bridging-Header.h */,
 				F36486B72B7525A3006150CA /* Extension from T2 */,
 				F36486B62B75249A006150CA /* Resources */,
+				F3CED4F62B86917D00E92B10 /* Tutorial 6 - GPU Rendering */,
 				F350DD222B8113340061C516 /* Tutorial 5 - Tiled Rendering */,
 				F36486BC2B77F8A0006150CA /* Tutorial 4 - Shadows */,
 				F364869B2B750B6F006150CA /* Tutorial 3 - Deferred Rendering Object */,
@@ -442,15 +470,19 @@
 				F350DD2D2B8113340061C516 /* MT5DeferredRendering.metal in Sources */,
 				F3F7885125F0DFF900AE2753 /* MT1ContentView.swift in Sources */,
 				F36486AE2B750B6F006150CA /* MT3DeferredMetalView.swift in Sources */,
+				F3CED4FE2B86917D00E92B10 /* MT6GPUDeferredRenderer.swift in Sources */,
+				F3CED5002B86917D00E92B10 /* MT6DeferredRendering.metal in Sources */,
 				F3C3895F25F8C558009AC4F2 /* MT2SampleObjectMetalView.swift in Sources */,
 				F3EDF77025FE5A4100D654BE /* MT2SampleObjectShaders.metal in Sources */,
 				F3F7884F25F0DFF900AE2753 /* MTMetalTutorialsApp.swift in Sources */,
 				F36486BA2B76010D006150CA /* MTLRenderCommandEncoder+BufferView.swift in Sources */,
+				F3CED5022B86917D00E92B10 /* MT6GPUDeferredMetalView.swift in Sources */,
 				F36486C42B77F8A0006150CA /* MT4DeferredRendering.metal in Sources */,
 				F36486C62B77F8A0006150CA /* MT4ContentView.swift in Sources */,
 				F3A2F48525F0F2330064CB29 /* MT1Simple2DTriangleMetalView.swift in Sources */,
 				F3EDF76625FE15DD00D654BE /* MT2ObjRenderer.swift in Sources */,
 				F3C3895825F8C4F0009AC4F2 /* MT2ContentView.swift in Sources */,
+				F3CED5062B86917D00E92B10 /* MT6ContentView.swift in Sources */,
 				F36486B42B750B6F006150CA /* MT3DeferredRendering.metal in Sources */,
 				F36486CC2B77F8A0006150CA /* MT4DeferredRenderer.swift in Sources */,
 				F36486AA2B750B6F006150CA /* MT3DeferredRenderer.swift in Sources */,
@@ -471,15 +503,19 @@
 				F350DD2E2B8113340061C516 /* MT5DeferredRendering.metal in Sources */,
 				F3F7885225F0DFF900AE2753 /* MT1ContentView.swift in Sources */,
 				F36486AF2B750B6F006150CA /* MT3DeferredMetalView.swift in Sources */,
+				F3CED4FF2B86917D00E92B10 /* MT6GPUDeferredRenderer.swift in Sources */,
+				F3CED5012B86917D00E92B10 /* MT6DeferredRendering.metal in Sources */,
 				F3C3896025F8C558009AC4F2 /* MT2SampleObjectMetalView.swift in Sources */,
 				F3EDF77125FE5A4100D654BE /* MT2SampleObjectShaders.metal in Sources */,
 				F3F82FFD26A8731F001F426E /* MTMetalTutorialsApp.swift in Sources */,
 				F36486BB2B76010D006150CA /* MTLRenderCommandEncoder+BufferView.swift in Sources */,
+				F3CED5032B86917D00E92B10 /* MT6GPUDeferredMetalView.swift in Sources */,
 				F36486C52B77F8A0006150CA /* MT4DeferredRendering.metal in Sources */,
 				F36486C72B77F8A0006150CA /* MT4ContentView.swift in Sources */,
 				F3A2F48625F0F2330064CB29 /* MT1Simple2DTriangleMetalView.swift in Sources */,
 				F3EDF76725FE15DD00D654BE /* MT2ObjRenderer.swift in Sources */,
 				F3C3895925F8C4F0009AC4F2 /* MT2ContentView.swift in Sources */,
+				F3CED5072B86917D00E92B10 /* MT6ContentView.swift in Sources */,
 				F36486B52B750B6F006150CA /* MT3DeferredRendering.metal in Sources */,
 				F36486CD2B77F8A0006150CA /* MT4DeferredRenderer.swift in Sources */,
 				F36486AB2B750B6F006150CA /* MT3DeferredRenderer.swift in Sources */,

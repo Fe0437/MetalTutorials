@@ -12,10 +12,10 @@ import ModelIO
 import Combine
 import simd
 
-/**
- Main class that is managing all the rendering of the view.
- It is intialized with the parent MetalView that use also to take the mtkview
- */
+/// tutorial 2 - Sample object
+
+/// 🥷: Main class that is managing all the rendering of the view.
+/// in the Tutorial1 this class was hidden inside the UIViewRepresentable, now it is a standalone class.
 class MT2ObjRenderer : NSObject, MTKViewDelegate {
     
     /**
@@ -28,11 +28,12 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
         // create the command queue
         _commandQueue = _device.makeCommandQueue()
         
+        // load the asset
         let meshAsset = MT2ObjRenderer._loadObj(
             objName: objName,
             device: _device
         )
-        // depth stencil
+        // build the depth stencil state for the pipeline
         _depthStencilState = MT2ObjRenderer._buildDepthStencilState(device: _device)
         
         super.init()
@@ -44,6 +45,24 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
         )
     }
     
+    /// class public configurations \{
+
+    
+    struct ModelConfigs
+    {
+        var shouldRotateAroundBBox: Bool = true
+    }
+    
+    struct Camera
+    {
+        var lookAt: (origin:SIMD3<Float>, target:SIMD3<Float>)
+        var fov: Float
+        var aspectRatio: Float
+        var nearZ: Float
+        var farZ: Float
+    }
+
+
     func setLightPosition(_ lightPosition: SIMD3<Float>)
     {
         _optionalLightPosition = lightPosition;
@@ -58,42 +77,54 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
     {
         _optionalCamera = camera
     }
+
+    /// \}
+
+    /// MTKViewDelegate methods \{
     
     ///whenever the size changes or orientation changes
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         _viewportSize.x = UInt32(size.width)
         _viewportSize.y = UInt32(size.height)
-    }
-    
-    
-    private func _retrieveDataFromAsset(_ meshAsset: MDLAsset) {
-        do {
-            (_, _meshes) = try MTKMesh.newMeshes(asset: meshAsset, device: _device)
-        } catch {
-            fatalError("Could not extract meshes from Model I/O asset")
-        }
+    } 
+       
+    ///here you create a command buffer
+    ///encode commands that tells to the gpu what to draw
+    func draw(in view: MTKView) {
+
+        // compute the current rotation angle every frame
+        _computeCurrentRotationAngle()
+        //print("rotation is \(_currentAngle)")
         
-        /// Model I/O’s vertex descriptor type and Metal’s vertex descriptor type
-        _vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(meshAsset.vertexDescriptor!)
-        _objboundingBox = meshAsset.boundingBox
-    }
-    
-    private func _computeCurrentRotationAngle() {
-        let time = CACurrentMediaTime()
-        
-        if _currentTime != nil {
-            let elapsed = time - _currentTime!
-            print("elapsed is \(elapsed)")
-            _currentAngle -= elapsed
+        //check if we want to retrieve the rendered image
+        if let retrieveImageDelegate = _retrieveImageDelegate
+        {
+            
+            view.framebufferOnly = false
+            (view.layer as! CAMetalLayer).allowsNextDrawableTimeout = false
+            view.colorPixelFormat = MTLPixelFormat.bgra8Unorm;
+            
+            _render(with: view, completedHandler: retrieveImageDelegate)
         }
-        _currentTime = time
+        else{
+            _render(with: view)
+        }
     }
+
+    /// \}
+
+    /// class private \{
     
+    /// main function that renders the object
+    /// Parameters:
+    /// - view: the MTKView to render into
+    /// - completedHandler: the handler that will be called when the rendering is completed
     private func _render(with view: MTKView, completedHandler: ((MTLTexture)-> Void)? = nil) {
         /// create the new command buffer for this pass
         let commandBuffer = _commandQueue.makeCommandBuffer()!
         commandBuffer.label = "Tutorial2Commands"
         
+        // take the current render pass descriptor, we are going to use that one to render.
         let passDesc = view.currentRenderPassDescriptor!
         let drawable:MTLDrawable! = view.currentDrawable
         let currentTexture = view.currentDrawable!.texture
@@ -101,11 +132,8 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
         // now creates a render command encoder to start
         // encoding of rendering commands
         let commandEncoder:MTLRenderCommandEncoder! = commandBuffer.makeRenderCommandEncoder(descriptor: passDesc)
-        commandEncoder.label = "Tutorial2RenderCommandEncoder"
-        
-        _computeCurrentRotationAngle()
-        
-        print("rotation is \(_currentAngle)")
+        commandEncoder.label = "Tutorial2RenderCommandEncoder"  
+
         var uniforms = _buildUniforms(view)
         
         // The uniform values will now be available inside the vertex function as the parameter attributed with [[buffer(1)]].
@@ -148,22 +176,31 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
         commandBuffer.commit()
         
     }
+
+    /// take the MTKMeshes from the MDSLAsset
+    /// Parameter meshAsset: the asset to take the meshes from
+    private func _retrieveDataFromAsset(_ meshAsset: MDLAsset) {
+        do {
+            (_, _meshes) = try MTKMesh.newMeshes(asset: meshAsset, device: _device)
+        } catch {
+            fatalError("Could not extract meshes from Model I/O asset")
+        }
+        
+        /// Model I/O’s vertex descriptor type and Metal’s vertex descriptor type
+        _vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(meshAsset.vertexDescriptor!)
+        _objboundingBox = meshAsset.boundingBox
+    }
     
-    ///here you create a command buffer
-    ///encode commands that tells to the gpu what to draw
-    func draw(in view: MTKView) {
-        if let retrieveImageDelegate = _retrieveImageDelegate
-        {
-            
-            view.framebufferOnly = false
-            (view.layer as! CAMetalLayer).allowsNextDrawableTimeout = false
-            view.colorPixelFormat = MTLPixelFormat.bgra8Unorm;
-            
-            _render(with: view, completedHandler: retrieveImageDelegate)
+    /// compute the current rotation angle to rotate the imported object at every rendered frame
+    private func _computeCurrentRotationAngle() {
+        let time = CACurrentMediaTime()
+        
+        if _currentTime != nil {
+            let elapsed = time - _currentTime!
+            print("elapsed is \(elapsed)")
+            _currentAngle -= elapsed
         }
-        else{
-            _render(with: view)
-        }
+        _currentTime = time
     }
         
     /// method to retrieve the uiimage from a mtl texture without passing through a CIImage (not reccomended)
@@ -324,7 +361,7 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
         _metalView.colorPixelFormat = .bgra8Unorm_srgb
         rndPipStatDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
         
-        // depth stencil @{
+        // depth stencil \{
         
         //they have to match
         _metalView.depthStencilPixelFormat = .depth32Float
@@ -346,9 +383,9 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
         return pipelineState
     }
     
-    // depth stencil @{
-    // !without this is gonna render -- but it will not be able to
-    // understand what is behind and what is not
+    /// depth stencil
+    /// !without this is gonna render -- but it will not be able to
+    /// understand what is behind and what is not
     static private func _buildDepthStencilState(device: MTLDevice) -> MTLDepthStencilState {
         let depthStencilDescriptor = MTLDepthStencilDescriptor()
         // whether a fragment passes the so-called depth test
@@ -356,41 +393,28 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
         depthStencilDescriptor.isDepthWriteEnabled = true
         return device.makeDepthStencilState(descriptor: depthStencilDescriptor)!
     }
-    // @}
+        
     
-    struct ModelConfigs
-    {
-        var shouldRotateAroundBBox: Bool = true
-    }
-    
-    struct Camera
-    {
-        var lookAt: (origin:SIMD3<Float>, target:SIMD3<Float>)
-        var fov: Float
-        var aspectRatio: Float
-        var nearZ: Float
-        var farZ: Float
-    }
-    
-    //tutorial2 - scene setup
+    ///tutorial2 - Sample object
+
     var _optionalLightPosition: SIMD3<Float>?
     var _modelConfigs:ModelConfigs = ModelConfigs()
     var _optionalCamera:Camera?
-    
-    //tutorial2 - obj render
     var _objboundingBox:MDLAxisAlignedBoundingBox!
     var _currentAngle:Double = 0
     var _currentTime:CFTimeInterval?
     var _meshes:[MTKMesh]!
     var _vertexDescriptor: MTLVertexDescriptor!
-    // depth stencil
     let _depthStencilState: MTLDepthStencilState
     
-    //tutorial 1 - basic
+    ///tutorial 1 - Hello
+
     let _metalView:MTKView!
     let _device:MTLDevice!
     let _commandQueue:MTLCommandQueue!
     var _pipelineState:MTLRenderPipelineState?
     var _viewportSize = vector_uint2(100,100)
+
+    // \}
     
 }

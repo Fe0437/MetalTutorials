@@ -12,40 +12,15 @@ import ModelIO
 import Combine
 import simd
 
-/**
- Main class that is managing all the rendering of the view.
- It is intialized with the parent MetalView that use also to take the mtkview
- */
+/// 🥷: Main class that is managing all the rendering of the view.
+/// 🌚: adding the shadows for the object on the deferred rendering and a plane to cast shadows on
 class MT4DeferredRenderer : NSObject, MTKViewDelegate {
     
-    struct GBuffer {
-        let albedoSpecular: MTLTexture
-        let normal : MTLTexture
-        let depth : MTLTexture
-    }
-    
-    struct ModelConfigs
-    {
-        var shouldRotateAroundBBox: Bool = true
-    }
-    
-    struct Camera
-    {
-        var lookAt: (origin:SIMD3<Float>, target:SIMD3<Float>)
-        var fov: Float
-        var aspectRatio: Float
-        var nearZ: Float
-        var farZ: Float
-    }
-    
-    /**
-     init pipeline and load the obj asset
-     */
     init(metalView: MTKView, objName:String) {
         
         _metalView = metalView
         // Set the pixel formats of the render destination.
-        _metalView.depthStencilPixelFormat = .depth32Float_stencil8
+        _metalView.depthStencilPixelFormat = .depth32Float
         _metalView.colorPixelFormat = .bgra8Unorm_srgb
         
         _device = _metalView.device
@@ -74,6 +49,8 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         
         _quadVertexBuffer = .init(device: _device, array: quadVertices)
         
+        // to show the shadow we create a plane that will be placed under the object
+
         let plane = Self._buildPlane(device: _device)
         do {
             (_, _basePlaneMesh) = try MTKMesh.newMeshes(asset: plane, device: _device)
@@ -87,6 +64,23 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         
     }
     
+    /// class public configurations \{
+    
+    struct ModelConfigs
+    {
+        var shouldRotateAroundBBox: Bool = true
+    }
+    
+    struct Camera
+    {
+        var lookAt: (origin:SIMD3<Float>, target:SIMD3<Float>)
+        var fov: Float
+        var aspectRatio: Float
+        var nearZ: Float
+        var farZ: Float
+    }
+
+
     func setLightPosition(_ lightPosition: SIMD3<Float>)
     {
         _optionalLightPosition = lightPosition;
@@ -101,7 +95,10 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
     {
         _optionalCamera = camera
     }
+
+    /// \}
     
+    ///MTKViewDelegate \{
     
     ///whenever the size changes or orientation changes
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -109,7 +106,8 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         _viewportSize.x = UInt32(size.width)
         _viewportSize.y = UInt32(size.height)
         
-        
+        ///tutorial 4 - Shadows \{
+
         //create shadow texture
         let shadowextureDesc = MTLTextureDescriptor
             .texture2DDescriptor(pixelFormat: .depth32Float,
@@ -125,6 +123,8 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         }
         shadowTexture.label = "Shadow Depth Texture"
         _shadowTexture = shadowTexture
+
+        /// \}
                 
         //create gBuffer textures
         let albedoDesc = MTLTextureDescriptor
@@ -164,6 +164,8 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         
         //create pipeline
         
+        ///tutorial 4 - Shadows \{
+
         _shadowPSO = _buildPipeline(
             vertexFunctionName: "MT4::vertex_depth",
             fragmentFunctionName: nil,
@@ -174,6 +176,8 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
             descriptor.depthAttachmentPixelFormat = .depth32Float
             descriptor.stencilAttachmentPixelFormat = .invalid
         }
+
+        /// \}
         
         _gBufferPSO = _buildPipeline(
             vertexFunctionName: "MT4::vertex_main",
@@ -184,7 +188,6 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
             descriptor.colorAttachments[Int(MT4RenderTargetNormal.rawValue)]?.pixelFormat = gBufferTextureDesc.pixelFormat
             descriptor.colorAttachments[Int(MT4RenderTargetDepth.rawValue)]?.pixelFormat = gBufferTextureDesc.pixelFormat
             descriptor.depthAttachmentPixelFormat = _metalView.depthStencilPixelFormat
-            descriptor.stencilAttachmentPixelFormat = _metalView.depthStencilPixelFormat
         }
         
         _displayPipelineState = _buildPipeline(
@@ -198,54 +201,32 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
                         
             //they have to match
             descriptor.depthAttachmentPixelFormat = _metalView.depthStencilPixelFormat
-            descriptor.stencilAttachmentPixelFormat = _metalView.depthStencilPixelFormat
         }
     }
     
     ///here you create a command buffer
     ///encode commands that tells to the gpu what to draw
     func draw(in view: MTKView) {
-        _render(with: view)
-    }
-    
-    private func _renderPlane(_ commandEncoder: MTLRenderCommandEncoder){
-        //render base plane
-        let basePlaneBuffer = _basePlaneMesh.first!.vertexBuffers.first!
-        commandEncoder.setVertexBuffer(basePlaneBuffer.buffer,
-                                      offset: 0,
-                                      index: 0)
-        let psubmesh = _basePlaneMesh.first!.submeshes.first!
-        let pindexBuffer = psubmesh.indexBuffer
-        commandEncoder.drawIndexedPrimitives(type: psubmesh.primitiveType,
-                                             indexCount: psubmesh.indexCount,
-                                             indexType: psubmesh.indexType,
-                                             indexBuffer: pindexBuffer.buffer,
-                                             indexBufferOffset: pindexBuffer.offset)
-    }
-    
-    private func _renderMeshes(_ commandEncoder: MTLRenderCommandEncoder) {
-        
-        // real drawing of the primitive
-        for mesh in _meshes {
-            let vertexBuffer = mesh.vertexBuffers.first!
-            //[[attribute(0)]]
-            commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
-            
-            for submesh in mesh.submeshes {
-                let indexBuffer = submesh.indexBuffer
-                commandEncoder.drawIndexedPrimitives(type: submesh.primitiveType,
-                                                     indexCount: submesh.indexCount,
-                                                     indexType: submesh.indexType,
-                                                     indexBuffer: indexBuffer.buffer,
-                                                     indexBufferOffset: indexBuffer.offset)
-            }
-        }
-    }
-    
-    private func _render(with view: MTKView) {
+
         /// create the new command buffer for this pass
         _computeCurrentRotationAngle()
+
+        _render(with: view)
+    }
+
+    /// \}
+
+
+    /// private \{
+    
+    struct GBuffer {
+        let albedoSpecular: MTLTexture
+        let normal : MTLTexture
+        let depth : MTLTexture
+    }
         
+    private func _render(with view: MTKView) {
+
         let commandBuffer = _commandQueue.makeCommandBuffer()!
         commandBuffer.label = "Tutorial4Commands"
         
@@ -262,6 +243,10 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         var uniforms = _buildUniforms(view, modelMatrix: modelMatrix)
         var planeUniforms = _buildUniforms(view, modelMatrix:  float4x4(translationBy: -center) * float4x4(rotationAbout: SIMD3<Float>(0, 0, 1), by: Float.pi * -0.5))
         
+        ///tutorial 4 - Shadows \{
+
+        //shadow pass
+
         let shadowPassDescriptor: MTLRenderPassDescriptor = {
             let descriptor = MTLRenderPassDescriptor()
             descriptor.depthAttachment.loadAction = .clear
@@ -299,13 +284,8 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
             descriptor.colorAttachments[Int(MT4RenderTargetDepth.rawValue)].texture = _gBuffer.depth
             
             descriptor.depthAttachment.loadAction = .clear
-            descriptor.stencilAttachment.loadAction = .clear
             descriptor.depthAttachment.texture = view.depthStencilTexture
-            descriptor.stencilAttachment.texture = view.depthStencilTexture
-
-            // Depth and Stencil attachments are needed in next pass, so need to store them (since the default is .dontCare).
             descriptor.depthAttachment.storeAction = .dontCare
-            descriptor.stencilAttachment.storeAction = .dontCare
             return descriptor
         }()
 
@@ -409,6 +389,41 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         return meshAsset
         
     }
+ 
+    private func _renderPlane(_ commandEncoder: MTLRenderCommandEncoder){
+        //render base plane
+        let basePlaneBuffer = _basePlaneMesh.first!.vertexBuffers.first!
+        commandEncoder.setVertexBuffer(basePlaneBuffer.buffer,
+                                      offset: 0,
+                                      index: 0)
+        let psubmesh = _basePlaneMesh.first!.submeshes.first!
+        let pindexBuffer = psubmesh.indexBuffer
+        commandEncoder.drawIndexedPrimitives(type: psubmesh.primitiveType,
+                                             indexCount: psubmesh.indexCount,
+                                             indexType: psubmesh.indexType,
+                                             indexBuffer: pindexBuffer.buffer,
+                                             indexBufferOffset: pindexBuffer.offset)
+    }
+    
+    private func _renderMeshes(_ commandEncoder: MTLRenderCommandEncoder) {
+        
+        // real drawing of the primitive
+        for mesh in _meshes {
+            let vertexBuffer = mesh.vertexBuffers.first!
+            //[[attribute(0)]]
+            commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
+            
+            for submesh in mesh.submeshes {
+                let indexBuffer = submesh.indexBuffer
+                commandEncoder.drawIndexedPrimitives(type: submesh.primitiveType,
+                                                     indexCount: submesh.indexCount,
+                                                     indexType: submesh.indexType,
+                                                     indexBuffer: indexBuffer.buffer,
+                                                     indexBufferOffset: indexBuffer.offset)
+            }
+        }
+    }
+
     
     private class func _buildPlane(device: MTLDevice) -> MDLAsset
     {
@@ -516,7 +531,6 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         }
     }
     
-    // depth stencil @{
     // !without this is gonna render -- but it will not be able to
     // understand what is behind and what is not
     static private func _buildDepthStencilState(device: MTLDevice) -> MTLDepthStencilState {
@@ -528,7 +542,6 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         depthStencilDescriptor.backFaceStencil = nil
         return device.makeDepthStencilState(descriptor: depthStencilDescriptor)!
     }
-    // @}
     
     /// Encoding pass wrapper
     /// - Parameters:
@@ -562,12 +575,13 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
     }
     
     //tutorial 4 - Shadows
+
     private var _shadowPSO :MTLRenderPipelineState!
     private var _shadowTexture: MTLTexture!
     private let _basePlaneMesh: [MTKMesh]
-
     
     //tutorial 3 - Deferred Rendering
+
     private var _gBuffer : GBuffer!
     private var _gBufferPSO:MTLRenderPipelineState!
     // Mesh buffer for simple Quad
@@ -583,21 +597,20 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         }
     }()
     
-    //tutorial2 - scene setup
+    //tutorial 2 - Sample object
+
     private var _optionalLightPosition: SIMD3<Float>?
     private var _modelConfigs:ModelConfigs = ModelConfigs()
-    private var _optionalCamera:Camera?
-    
-    //tutorial2 - obj render
+    private var _optionalCamera:Camera? 
     private var _objboundingBox:MDLAxisAlignedBoundingBox!
     private var _currentAngle:Double = 0
     private var _currentTime:CFTimeInterval?
     private var _meshes:[MTKMesh]!
     private var _vertexDescriptor: MTLVertexDescriptor!
-    // depth stencil
     private let _depthStencilState: MTLDepthStencilState
     
-    //tutorial 1 - basic
+    //tutorial 1 - Hello
+
     private let _metalView:MTKView!
     private let _device:MTLDevice!
     private let _commandQueue:MTLCommandQueue!

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MT4ContentView: View {
     var body: some View {
-        MT4DeferredMetalView()
+        MT4DeferredMetalView(objName: "bunny")
             .navigationTitle("Tutorial 4")
     }
 }

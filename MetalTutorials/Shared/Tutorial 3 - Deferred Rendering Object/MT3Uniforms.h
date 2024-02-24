@@ -23,13 +23,15 @@ struct MT3FragmentUniforms
 };
 
 // Buffer index values shared between shader and C code to ensure Metal shader buffer inputs match
-//   Metal API buffer set calls
+// Metal API buffer set calls
 typedef enum MT3BufferIndices
 {
     MT3BufferIndexMeshPositions     = 0
 
 } MT3BufferIndices;
 
+// basic 2d vertex used to render the full screen quad that composes the GBuffer
+// lighting happens in this pass but we only to render a full screen quad
 typedef struct {
     vector_float2 position;
 } MT3BasicVertex;

@@ -12,34 +12,19 @@ import ModelIO
 import Combine
 import simd
 
-/**
- Main class that is managing all the rendering of the view.
- It is intialized with the parent MetalView that use also to take the mtkview
- */
+/// tutorial 3 - deferred rendering
+
+/// 🥷: Main class that is managing all the rendering of the view.
+///🧩🧩🧩 ⏩️ 🖼️: rendering a .obj and a point light in a deferred rendering pipeline.
 class MT3DeferredRenderer : NSObject, MTKViewDelegate {
+     
     
-    struct ModelConfigs
-    {
-        var shouldRotateAroundBBox: Bool = true
-    }
-    
-    struct Camera
-    {
-        var lookAt: (origin:SIMD3<Float>, target:SIMD3<Float>)
-        var fov: Float
-        var aspectRatio: Float
-        var nearZ: Float
-        var farZ: Float
-    }
-    
-    /**
-     init pipeline and load the obj asset
-     */
+    /// initialize the renderer with the metal view and the obj name
     init(metalView: MTKView, objName:String) {
         
         _metalView = metalView
         // Set the pixel formats of the render destination.
-        _metalView.depthStencilPixelFormat = .depth32Float_stencil8
+        _metalView.depthStencilPixelFormat = .depth32Float
         _metalView.colorPixelFormat = .bgra8Unorm_srgb
         
         _device = _metalView.device
@@ -55,6 +40,7 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         _depthStencilState = Self._buildDepthStencilState(device: _device)
         
         // Create quad for fullscreen composition drawing
+        // this is going to be used in the last stage
         let quadVertices: [MT3BasicVertex] = [
             .init(position: .init(x: -1, y: -1)),
             .init(position: .init(x: -1, y:  1)),
@@ -70,11 +56,26 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         super.init()
         
         _library = _device.makeDefaultLibrary()
-        
         _retrieveDataFromAsset(meshAsset)
-        
     }
     
+     /// class public configurations \{
+    
+    struct ModelConfigs
+    {
+        var shouldRotateAroundBBox: Bool = true
+    }
+    
+    struct Camera
+    {
+        var lookAt: (origin:SIMD3<Float>, target:SIMD3<Float>)
+        var fov: Float
+        var aspectRatio: Float
+        var nearZ: Float
+        var farZ: Float
+    }
+
+
     func setLightPosition(_ lightPosition: SIMD3<Float>)
     {
         _optionalLightPosition = lightPosition;
@@ -89,9 +90,12 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
     {
         _optionalCamera = camera
     }
+
+    /// \}
+
+    /// MTKViewDelegate \{
     
-    
-    ///whenever the size changes or orientation changes
+    ///whenever the size changes or orientation changes build the pipelines and store the new size
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         
         _viewportSize.x = UInt32(size.width)
@@ -144,7 +148,6 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
             descriptor.colorAttachments[Int(MT3RenderTargetNormal.rawValue)]?.pixelFormat = gBufferTextureDesc.pixelFormat
             descriptor.colorAttachments[Int(MT3RenderTargetDepth.rawValue)]?.pixelFormat = gBufferTextureDesc.pixelFormat
             descriptor.depthAttachmentPixelFormat = _metalView.depthStencilPixelFormat
-            descriptor.stencilAttachmentPixelFormat = _metalView.depthStencilPixelFormat
         }
         
         _displayPipelineState = _buildPipeline(
@@ -158,47 +161,32 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
                         
             //they have to match
             descriptor.depthAttachmentPixelFormat = _metalView.depthStencilPixelFormat
-            descriptor.stencilAttachmentPixelFormat = _metalView.depthStencilPixelFormat
         }
     }
     
+    ///here you create a command buffer
+    ///encode commands that tells to the gpu what to draw
+    func draw(in view: MTKView) {
     
-    private func _retrieveDataFromAsset(_ meshAsset: MDLAsset) {
-        do {
-            (_, _meshes) = try MTKMesh.newMeshes(asset: meshAsset, device: _device)
-        } catch {
-            fatalError("Could not extract meshes from Model I/O asset")
-        }
-        
-        /// Model I/O’s vertex descriptor type and Metal’s vertex descriptor type
-        _vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(meshAsset.vertexDescriptor!)
-        _objboundingBox = meshAsset.boundingBox
+        _computeCurrentRotationAngle()
+        _render(with: view)
     }
+
+    /// \}
+
+
+    /// private \{
     
-    private func _computeCurrentRotationAngle() {
-        let time = CACurrentMediaTime()
-        
-        if _currentTime != nil {
-            let elapsed = time - _currentTime!
-            _currentAngle -= elapsed
-        }
-        _currentTime = time
-    }
-    
+    /// GBuffer textures which are going to used to store the information of the scene
     struct GBuffer {
         let albedoSpecular: MTLTexture
         let normal : MTLTexture
         let depth : MTLTexture
     }
-    private var _gBuffer : GBuffer!
-        
-    // Mesh buffer for simple Quad
-    let quadVertexBuffer: BufferView<MT3BasicVertex>
-    
+
     private func _render(with view: MTKView) {
         /// create the new command buffer for this pass
-        _computeCurrentRotationAngle()
-        
+
         let commandBuffer = _commandQueue.makeCommandBuffer()!
         commandBuffer.label = "Tutorial3Commands"
         
@@ -217,13 +205,8 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
             descriptor.colorAttachments[Int(MT3RenderTargetDepth.rawValue)].texture = _gBuffer.depth
             
             descriptor.depthAttachment.loadAction = .clear
-            descriptor.stencilAttachment.loadAction = .clear
             descriptor.depthAttachment.texture = view.depthStencilTexture
-            descriptor.stencilAttachment.texture = view.depthStencilTexture
-
-            // Depth and Stencil attachments are needed in next pass, so need to store them (since the default is .dontCare).
             descriptor.depthAttachment.storeAction = .dontCare
-            descriptor.stencilAttachment.storeAction = .dontCare
             return descriptor
         }()
         
@@ -291,12 +274,30 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         
         commandBuffer.commit()
     }
+
     
-    ///here you create a command buffer
-    ///encode commands that tells to the gpu what to draw
-    func draw(in view: MTKView) {
-        _render(with: view)
+    private func _retrieveDataFromAsset(_ meshAsset: MDLAsset) {
+        do {
+            (_, _meshes) = try MTKMesh.newMeshes(asset: meshAsset, device: _device)
+        } catch {
+            fatalError("Could not extract meshes from Model I/O asset")
+        }
+        
+        /// Model I/O’s vertex descriptor type and Metal’s vertex descriptor type
+        _vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(meshAsset.vertexDescriptor!)
+        _objboundingBox = meshAsset.boundingBox
     }
+    
+    private func _computeCurrentRotationAngle() {
+        let time = CACurrentMediaTime()
+        
+        if _currentTime != nil {
+            let elapsed = time - _currentTime!
+            _currentAngle -= elapsed
+        }
+        _currentTime = time
+    }
+
     
     private class func _loadObj(objName :String, device: MTLDevice) -> MDLAsset
     {
@@ -382,7 +383,6 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         return MTLViewport(originX: 0.0, originY: 0.0, width: Double(_viewportSize.x), height: Double(_viewportSize.y), znear: 0.0, zfar: 1.0)
     }
     
-    var _library : MTLLibrary! = nil
     
     private func _buildPipeline(
         vertexFunction:String, fragmentFunction:String, label: String, customize: (MTLRenderPipelineDescriptor) -> Void) -> MTLRenderPipelineState  {
@@ -412,7 +412,6 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         }
     }
     
-    // depth stencil @{
     // !without this is gonna render -- but it will not be able to
     // understand what is behind and what is not
     static private func _buildDepthStencilState(device: MTLDevice) -> MTLDepthStencilState {
@@ -424,7 +423,6 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         depthStencilDescriptor.backFaceStencil = nil
         return device.makeDepthStencilState(descriptor: depthStencilDescriptor)!
     }
-    // @}
     
     /// Encoding pass wrapper
     /// - Parameters:
@@ -458,27 +456,13 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
     }
     
     
-    //tutorial2 - scene setup
-    var _optionalLightPosition: SIMD3<Float>?
-    var _modelConfigs:ModelConfigs = ModelConfigs()
-    var _optionalCamera:Camera?
+    ///tutorial 3 - deferred rendering
+
+    private var _gBuffer : GBuffer!
     
-    //tutorial2 - obj render
-    var _objboundingBox:MDLAxisAlignedBoundingBox!
-    var _currentAngle:Double = 0
-    var _currentTime:CFTimeInterval?
-    var _meshes:[MTKMesh]!
-    var _vertexDescriptor: MTLVertexDescriptor!
-    // depth stencil
-    let _depthStencilState: MTLDepthStencilState
-    
-    //tutorial 1 - basic
-    let _metalView:MTKView!
-    let _device:MTLDevice!
-    let _commandQueue:MTLCommandQueue!
-    var _gBuffPipelineState:MTLRenderPipelineState!
-    var _displayPipelineState: MTLRenderPipelineState!
-    
+    // Mesh buffer for simple Quad
+    let quadVertexBuffer: BufferView<MT3BasicVertex>
+
     lazy var _displayDepthStencilState = {
         let descriptor = MTLDepthStencilDescriptor()
         descriptor.label = "display depth stencil"
@@ -488,6 +472,30 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
             fatalError("Failed to create depth-stencil state.")
         }
     }()
+
+    
+    //tutorial2 - Sample object
+
+    var _library : MTLLibrary! = nil
+    var _optionalLightPosition: SIMD3<Float>?
+    var _modelConfigs:ModelConfigs = ModelConfigs()
+    var _optionalCamera:Camera?
+    var _objboundingBox:MDLAxisAlignedBoundingBox!
+    var _currentAngle:Double = 0
+    var _currentTime:CFTimeInterval?
+    var _meshes:[MTKMesh]!
+    var _vertexDescriptor: MTLVertexDescriptor!
+    let _depthStencilState: MTLDepthStencilState
+    
+    //tutorial 1 - Hello
+
+    let _metalView:MTKView!
+    let _device:MTLDevice!
+    let _commandQueue:MTLCommandQueue!
+    var _gBuffPipelineState:MTLRenderPipelineState!
+    var _displayPipelineState: MTLRenderPipelineState!
     var _viewportSize = vector_uint2(100,100)
+
+    /// \}
     
 }

@@ -1,19 +1,17 @@
 //
-//  MT3DeferredRendering.metal
+//  MT6DeferredRendering.metal
 //  MetalTutorials
 //
 //  Created by federico forti on 14/03/2021.
 //
 
 #include <metal_stdlib>
-#include "MT3Uniforms.h"
-#include "MT3GBuffer.h"
+#include "MT6Uniforms.h"
+#include "MT6RenderTargets.h"
 
-namespace MT3 {
+namespace MT6 {
     
     using namespace metal;
-
-    ///tutorial 2 \{
     
     struct VertexIn {
         float3 position  [[attribute(0)]];
@@ -26,18 +24,85 @@ namespace MT3 {
         float3 viewNormal;
         float4 viewPosition;
         float2 texCoords;
+        float4 lightViewPosition;
     };
     
+    /// [[stage_in]] to signify that it is built for us by loading data according to the vertex descriptor
+    /// second parameter is a reference to an instance of the Uniforms struct, which will hold the matrices we use to transform our vertices
     vertex VertexOut vertex_main(VertexIn vertexIn [[stage_in]],
-                                        constant MT3VertexUniforms &uniforms [[buffer(1)]])
+                                        constant MT6VertexUniforms &uniforms [[buffer(1)]])
     {
         VertexOut vertexOut;
         vertexOut.clipSpacePosition = uniforms.modelViewProjectionMatrix * float4(vertexIn.position, 1);
         vertexOut.viewNormal = uniforms.modelViewInverseTransposeMatrix * vertexIn.normal;
         vertexOut.viewPosition = uniforms.modelViewMatrix * float4(vertexIn.position, 1);
+        vertexOut.lightViewPosition = uniforms.shadowModelViewProjectionMatrix * float4(vertexIn.position, 1);
         return vertexOut;
-    } 
-     
+    }
+    
+    
+    struct GBuffer {
+        float4 albedo [[color(MT6RenderTargetAlbedo)]];
+        float4 normal [[color(MT6RenderTargetNormal)]];
+        float4 position [[color(MT6RenderTargetDepth)]];
+    };
+    
+    fragment GBuffer gbuffer_fragment(
+                                             VertexOut fragmentIn [[stage_in]],
+                                             depth2d<float> shadowTexture [[ texture(MT6RenderTargetShadow) ]], // < depth2d not texture
+                                             constant MT6FragmentUniforms &uniforms [[buffer(1)]]
+                                             )
+    {
+        
+        float3 lightCoords = fragmentIn.lightViewPosition.xyz / fragmentIn.lightViewPosition.w;
+        float2 lightScreenCoords = lightCoords.xy;
+        lightScreenCoords = lightScreenCoords * 0.5 + 0.5;
+        lightScreenCoords.y = 1 - lightScreenCoords.y; //invert y
+        
+        GBuffer out;
+
+        
+        
+        if (lightScreenCoords.x < 0.0 || lightScreenCoords.x > 1.0 || lightScreenCoords.y < 0.0 || lightScreenCoords.y > 1.0) {
+            out.albedo = float4(1, 0, 0, 1);
+        }else{
+            
+            constexpr sampler s(
+              coord::normalized, filter::linear,
+              address::clamp_to_edge,
+              compare_func:: less);
+            
+            float4 albedo = float4(1,1,1,1);
+            
+            float depthValue = shadowTexture.sample(s, lightScreenCoords);
+            if (lightCoords.z > depthValue + 0.00001f) {
+                albedo *= 0.4;
+            }
+            out.albedo = albedo;
+        }
+        out.normal = float4(normalize(fragmentIn.viewNormal),1);
+        out.position = normalize(fragmentIn.viewPosition);
+        return out;
+    }
+    
+    // display
+    
+    struct QuadInOut
+    {
+        float4 position [[position]];
+    };
+    
+    vertex QuadInOut
+    display_vertex(constant MT6ScreenVertex * vertices  [[ buffer(MT6BufferIndexMeshPositions) ]],
+                       uint                        vid       [[ vertex_id ]])
+    {
+        QuadInOut out;
+        
+        out.position = float4(vertices[vid].position, 0, 1);
+        
+        return out;
+    }
+    
     float rcp(float x)
     {
         return 1/x;
@@ -113,77 +178,36 @@ namespace MT3 {
         return float4(L_o,1);
     }
     
-    /// \}
-    
-    ///tutorial 3 \{
-
-    /// GBuffer render targets, each value is associated with a render target through the render pass
-    /// in this way the fragment shader is going to write on all the render targets
-    struct GBuffer {
-        float4 albedo [[color(MT3RenderTargetAlbedo)]];
-        float4 normal [[color(MT3RenderTargetNormal)]];
-        float4 position [[color(MT3RenderTargetDepth)]];
-    };
-    
-    /// fragment shader that writes on the gbuffer
-    /// here we are simply using a white albedo, and the output of the rasterized geometry
-    fragment GBuffer gbuffer_fragment(
-                                             VertexOut fragmentIn [[stage_in]],
-                                             constant MT3FragmentUniforms &uniforms [[buffer(1)]]
-                                             )
-    {
-        GBuffer out;
-        out.albedo = float4(1,1,1,1);
-        out.normal = float4(normalize(fragmentIn.viewNormal),1);
-        out.position = normalize(fragmentIn.viewPosition);
-        return out;
-    }
-    
-    // lighting stage
-    
-    /// we need only to know where we are on the screen so that we
-    /// can sample the texture correctly.
-    struct QuadInOut
-    {
-        float4 position [[position]];
-    };
-    
-    /// take the vertices as a constant buffer, they are not going to be changed
-    vertex QuadInOut
-    display_vertex(constant MT3BasicVertex * vertices  [[ buffer(MT3BufferIndexMeshPositions) ]],
-                       uint                        vid       [[ vertex_id ]])
-    {
-        QuadInOut out;
-        
-        out.position = float4(vertices[vid].position, 0, 1);
-        
-        return out;
-    }
-
-    /// lighting, take the textures from the GBuffer (they are binded on the render pass)
-    /// after getting all the data relative to the pixel we are rendering we can compute the lighting exactly 
-    /// like we have done in tutorial 2
-       fragment float4
+    fragment float4
     deferred_lighting_fragment(
                                    QuadInOut             in                      [[ stage_in ]],
-                                   texture2d<float>          albedo [[ texture(MT3RenderTargetAlbedo) ]],
-                                   texture2d<float>          normal [[ texture(MT3RenderTargetNormal) ]],
-                                   texture2d<float>          depth [[ texture(MT3RenderTargetDepth) ]],
-                                   constant MT3FragmentUniforms &uniforms [[buffer(1)]])
+                                   GBuffer            gBuffer                               ,
+                                   constant MT6FragmentUniforms &uniforms [[buffer(1)]])
     {
-        uint2 pixel_pos = uint2(in.position.xy);
-        float4 albedo_specular_at_pix = albedo.read(pixel_pos.xy);
-        float4 normal_at_pix = normal.read(pixel_pos.xy);
-        float4 position_at_pix = depth.read(pixel_pos.xy);
+        float4 albedo_specular_at_pix = gBuffer.albedo;
+        float4 normal_at_pix = gBuffer.normal;
+        float4 position_at_pix = gBuffer.position;
         
         const float3 V = normalize(-float3(position_at_pix));
         const float3 N = normalize(normal_at_pix.xyz - position_at_pix.xyz);
         const float3 L = normalize(float3(uniforms.viewLightPosition - position_at_pix));
         
-        //we could parametrize that, but not important
-        //for this tutorial
-        return calculate_out_radiance(albedo_specular_at_pix, L, N, V);
+        // albedo_specular_at_pix.a contains the shadow
+        return calculate_out_radiance(albedo_specular_at_pix, L, N, V) * albedo_specular_at_pix.a;
     }
+ 
+    //shadows
+
+    struct ShadowVertexIn {
+        float3 position  [[attribute(0)]];
+    };
+
+    vertex float4
+      vertex_depth(ShadowVertexIn in  [[ stage_in ]],
+                   constant MT6VertexUniforms &uniforms [[buffer(1)]])
+    {
+      return uniforms.shadowModelViewProjectionMatrix * float4(in.position,1);
+    }
+
     
-    /// \}
 }

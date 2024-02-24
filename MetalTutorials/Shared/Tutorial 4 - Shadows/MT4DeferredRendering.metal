@@ -72,6 +72,7 @@ namespace MT4 {
               address::clamp_to_edge,
               compare_func:: less);
             
+            
             float4 albedo = float4(1,1,1,1);
             
             float depthValue = shadowTexture.sample(s, lightScreenCoords);

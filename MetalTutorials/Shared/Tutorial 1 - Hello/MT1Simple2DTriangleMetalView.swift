@@ -1,5 +1,5 @@
 //
-//  MetalViewController.swift
+//  MT1Simple2DTriangleMetalView.swift
 //  MetalTutorials
 //
 //  Created by federico forti on 04/03/2021.
@@ -10,7 +10,10 @@ import MetalKit
 import UIKit
 
 /**
+ @brief This is a simple 2D triangle rendered using Metal. 
  
+ - 👥 🖼 : this class is also a UIViewRepresentable which is used to create a SwiftUI view from the MTKView UIKit class.
+ - 🥷 : inside the MTKView there is a MTRenderer that is the class that manages the rendering of the triangle, through the MTKViewDelegate interface.
  */
 struct MT1Simple2DTriangleMetalView: UIViewRepresentable {
     typealias UIViewType = MTKView
@@ -107,11 +110,20 @@ struct MT1Simple2DTriangleMetalView: UIViewRepresentable {
                     commandBuffer.commit()
                 }
             }
-        
+
+        // tutorial 1 - Hello 
+
+        // passed as input 
         let _metalView:MTKView!
         let _device:MTLDevice!
+        
+        // the command queue permits tus to create a new command buffer that will be executed by the GPU. 
         let _commandQueue:MTLCommandQueue!
+        // pipeline state completely defines the state of the GPU for the next draw. 
+        // for example the vertex and fragment shaders, the color attachment, the depth and stencil state...
         let _pipelineState:MTLRenderPipelineState?
+
+        // here we force the size of the viewport
         var _viewportSize = vector_uint2(100,100)
         }
     
@@ -126,6 +138,7 @@ struct MT1Simple2DTriangleMetalView: UIViewRepresentable {
         mtkView.device = device
     }
 
+    /// create the UIView associated with this UIViewRepresentable.
     func makeUIView(context: UIViewRepresentableContext<MT1Simple2DTriangleMetalView>) -> MTKView {
         mtkView.delegate = context.coordinator
         mtkView.preferredFramesPerSecond = 60

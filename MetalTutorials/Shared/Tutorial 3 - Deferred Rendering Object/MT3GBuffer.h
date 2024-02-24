@@ -8,6 +8,7 @@
 #ifndef MT3GBuffer_h
 #define MT3GBuffer_h
 
+/// Render Target Indices used to bind the textures between metal and the render pass descriptor
 typedef enum MT3RenderTargetIndices
 {
     MT3RenderTargetAlbedo    = 1,

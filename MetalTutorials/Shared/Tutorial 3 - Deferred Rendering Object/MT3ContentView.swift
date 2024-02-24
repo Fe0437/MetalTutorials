@@ -9,8 +9,8 @@ import SwiftUI
 
 struct MT3ContentView: View {
     var body: some View {
-        MT3DeferredMetalView()
-            .navigationTitle("Tutorial 3")
+        MT3DeferredMetalView(objName: "bunny")
+            .navigationTitle("Tutorial 3!")
     }
 }
 
