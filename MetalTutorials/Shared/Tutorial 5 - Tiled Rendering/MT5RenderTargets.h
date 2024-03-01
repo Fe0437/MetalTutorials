@@ -12,7 +12,7 @@ typedef enum MT5RenderTargetIndices
 {
     MT5RenderTargetAlbedo    = 1,
     MT5RenderTargetNormal    = 2,
-    MT5RenderTargetDepth     = 3,
+    MT5RenderTargetPosition     = 3,
     MT5RenderTargetShadow     = 4
 } MT5RenderTargetIndices;
 

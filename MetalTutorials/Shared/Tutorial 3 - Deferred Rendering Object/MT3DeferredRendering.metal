@@ -122,7 +122,7 @@ namespace MT3 {
     struct GBuffer {
         float4 albedo [[color(MT3RenderTargetAlbedo)]];
         float4 normal [[color(MT3RenderTargetNormal)]];
-        float4 position [[color(MT3RenderTargetDepth)]];
+        float4 position [[color(MT3RenderTargetPosition)]];
     };
     
     /// fragment shader that writes on the gbuffer
@@ -168,13 +168,13 @@ namespace MT3 {
                                    QuadInOut             in                      [[ stage_in ]],
                                    texture2d<float>          albedo [[ texture(MT3RenderTargetAlbedo) ]],
                                    texture2d<float>          normal [[ texture(MT3RenderTargetNormal) ]],
-                                   texture2d<float>          depth [[ texture(MT3RenderTargetDepth) ]],
+                                   texture2d<float>          position [[ texture(MT3RenderTargetPosition) ]],
                                    constant MT3FragmentUniforms &uniforms [[buffer(1)]])
     {
         uint2 pixel_pos = uint2(in.position.xy);
         float4 albedo_specular_at_pix = albedo.read(pixel_pos.xy);
         float4 normal_at_pix = normal.read(pixel_pos.xy);
-        float4 position_at_pix = depth.read(pixel_pos.xy);
+        float4 position_at_pix = position.read(pixel_pos.xy);
         
         const float3 V = normalize(-float3(position_at_pix));
         const float3 N = normalize(normal_at_pix.xyz - position_at_pix.xyz);

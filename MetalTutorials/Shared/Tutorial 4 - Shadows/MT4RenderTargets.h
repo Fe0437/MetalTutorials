@@ -12,7 +12,7 @@ typedef enum MT4RenderTargetIndices
 {
     MT4RenderTargetAlbedo    = 1,
     MT4RenderTargetNormal    = 2,
-    MT4RenderTargetDepth     = 3,
+    MT4RenderTargetPosition     = 3,
     MT4RenderTargetShadow     = 4
 } MT4RenderTargetIndices;
 

@@ -34,8 +34,8 @@ typedef enum MT5BufferIndices
 
 } MT5BufferIndices;
 
-typedef struct {
+struct MT5ScreenVertex{
     vector_float2 position;
-} MT5ScreenVertex;
+};
 
 #endif /* MT5Uniforms_h */

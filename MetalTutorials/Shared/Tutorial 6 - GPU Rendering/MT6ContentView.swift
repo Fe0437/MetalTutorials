@@ -1,21 +1,21 @@
-////
-////  ContentView.swift
-////  Shared
-////
-////  Created by federico forti on 04/03/2021.
-////
 //
-//import SwiftUI
+//  MT6ContentView.swift
+//  Shared
 //
-//struct MT6ContentView: View {
-//    var body: some View {
-//        MT6GPUDeferredMetalView()
-//            .navigationTitle("Tutorial 5")
-//    }
-//}
+//  Created by federico forti on 04/03/2021.
 //
-//struct MT6ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        MT6ContentView()
-//    }
-//}
+
+import SwiftUI
+
+struct MT6ContentView: View {
+    var body: some View {
+        MT6DeferredMetalView(filename: "toy_biplane_idle.usdz")
+            .navigationTitle("Tutorial 6")
+    }
+}
+
+struct MT6ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        MT6ContentView()
+    }
+}

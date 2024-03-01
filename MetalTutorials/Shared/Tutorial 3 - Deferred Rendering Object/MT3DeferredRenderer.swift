@@ -130,12 +130,12 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         }
         normal.label = "Normal GBuffer Texture"
         
-        guard let depthPosition = _device.makeTexture(descriptor: gBufferTextureDesc) else {
-            fatalError("cannot create depthPosition texture")
+        guard let position = _device.makeTexture(descriptor: gBufferTextureDesc) else {
+            fatalError("cannot create position texture")
         }
-        depthPosition.label = "Albedo depthPosition Texture"
+        position.label = "Albedo position Texture"
         
-        _gBuffer = GBuffer(albedoSpecular: albedoSpecular, normal: normal, depth: depthPosition)
+        _gBuffer = GBuffer(albedoSpecular: albedoSpecular, normal: normal, position: position)
         
         //create pipeline
         
@@ -146,7 +146,7 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         ){ descriptor in
             descriptor.colorAttachments[Int(MT3RenderTargetAlbedo.rawValue)]?.pixelFormat = albedoDesc.pixelFormat
             descriptor.colorAttachments[Int(MT3RenderTargetNormal.rawValue)]?.pixelFormat = gBufferTextureDesc.pixelFormat
-            descriptor.colorAttachments[Int(MT3RenderTargetDepth.rawValue)]?.pixelFormat = gBufferTextureDesc.pixelFormat
+            descriptor.colorAttachments[Int(MT3RenderTargetPosition.rawValue)]?.pixelFormat = gBufferTextureDesc.pixelFormat
             descriptor.depthAttachmentPixelFormat = _metalView.depthStencilPixelFormat
         }
         
@@ -181,7 +181,7 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
     struct GBuffer {
         let albedoSpecular: MTLTexture
         let normal : MTLTexture
-        let depth : MTLTexture
+        let position : MTLTexture
     }
 
     private func _render(with view: MTKView) {
@@ -200,9 +200,9 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
             descriptor.colorAttachments[Int(MT3RenderTargetNormal.rawValue)].storeAction = .store
             descriptor.colorAttachments[Int(MT3RenderTargetNormal.rawValue)].texture = _gBuffer.normal
             
-            descriptor.colorAttachments[Int(MT3RenderTargetDepth.rawValue)].loadAction = .clear
-            descriptor.colorAttachments[Int(MT3RenderTargetDepth.rawValue)].storeAction = .store
-            descriptor.colorAttachments[Int(MT3RenderTargetDepth.rawValue)].texture = _gBuffer.depth
+            descriptor.colorAttachments[Int(MT3RenderTargetPosition.rawValue)].loadAction = .clear
+            descriptor.colorAttachments[Int(MT3RenderTargetPosition.rawValue)].storeAction = .store
+            descriptor.colorAttachments[Int(MT3RenderTargetPosition.rawValue)].texture = _gBuffer.position
             
             descriptor.depthAttachment.loadAction = .clear
             descriptor.depthAttachment.texture = view.depthStencilTexture
@@ -256,7 +256,7 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
                 //set g buffer textures
                 renderEncoder.setFragmentTexture(_gBuffer.albedoSpecular, index: Int(MT3RenderTargetAlbedo.rawValue))
                 renderEncoder.setFragmentTexture(_gBuffer.normal, index: Int(MT3RenderTargetNormal.rawValue))
-                renderEncoder.setFragmentTexture(_gBuffer.depth, index: Int(MT3RenderTargetDepth.rawValue))
+                renderEncoder.setFragmentTexture(_gBuffer.position, index: Int(MT3RenderTargetPosition.rawValue))
                 renderEncoder.setFragmentBytes(&uniforms.1, length: MemoryLayout<MT3FragmentUniforms>.size, index: 1)
 
                 renderEncoder.setCullMode(.back)

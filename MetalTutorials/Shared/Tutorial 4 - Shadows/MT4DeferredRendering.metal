@@ -44,7 +44,7 @@ namespace MT4 {
     struct GBuffer {
         float4 albedo [[color(MT4RenderTargetAlbedo)]];
         float4 normal [[color(MT4RenderTargetNormal)]];
-        float4 position [[color(MT4RenderTargetDepth)]];
+        float4 position [[color(MT4RenderTargetPosition)]];
     };
     
     fragment GBuffer gbuffer_fragment(
@@ -184,7 +184,7 @@ namespace MT4 {
                                    QuadInOut             in                      [[ stage_in ]],
                                    texture2d<float>          albedo [[ texture(MT4RenderTargetAlbedo) ]],
                                    texture2d<float>          normal [[ texture(MT4RenderTargetNormal) ]],
-                                   texture2d<float>          depth [[ texture(MT4RenderTargetDepth) ]],
+                                   texture2d<float>          depth [[ texture(MT4RenderTargetPosition) ]],
                                    constant MT4FragmentUniforms &uniforms [[buffer(1)]])
     {
         uint2 pixel_pos = uint2(in.position.xy);

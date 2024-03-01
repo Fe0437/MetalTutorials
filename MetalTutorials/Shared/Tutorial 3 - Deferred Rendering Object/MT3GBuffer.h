@@ -13,7 +13,7 @@ typedef enum MT3RenderTargetIndices
 {
     MT3RenderTargetAlbedo    = 1,
     MT3RenderTargetNormal    = 2,
-    MT3RenderTargetDepth     = 3
+    MT3RenderTargetPosition     = 3
 } MT3RenderTargetIndices;
 
 #endif /* MT3GBuffer_h */

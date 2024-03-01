@@ -44,7 +44,7 @@ namespace MT5 {
     struct GBuffer {
         float4 albedo [[color(MT5RenderTargetAlbedo)]];
         float4 normal [[color(MT5RenderTargetNormal)]];
-        float4 position [[color(MT5RenderTargetDepth)]];
+        float4 position [[color(MT5RenderTargetPosition)]];
     };
     
     fragment GBuffer gbuffer_fragment(

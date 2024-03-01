@@ -10,10 +10,10 @@
 
 typedef enum MT6RenderTargetIndices
 {
-    MT6RenderTargetAlbedo    = 1,
-    MT6RenderTargetNormal    = 2,
-    MT6RenderTargetDepth     = 3,
-    MT6RenderTargetShadow     = 4
+    MT6RenderTargetBaseColorAndSpecular    = 1,
+    MT6RenderTargetNormalAndVisibility    = 2,
+    MT6RenderTargetPosition     = 3,
+    MT6RenderTargetShadow    = 4
 } MT6RenderTargetIndices;
 
 #endif /* MT6GBuffer_h */

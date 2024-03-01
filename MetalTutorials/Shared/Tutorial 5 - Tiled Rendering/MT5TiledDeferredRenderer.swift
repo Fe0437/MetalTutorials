@@ -13,7 +13,7 @@ import Combine
 import simd
 
 /// 🥷: Main class that is managing all the rendering of the view.
-/// ⚡️: this is a versiono of the deferred renderer that is using the tiled Rendering
+/// ⚡️: this is a version of the deferred renderer that is using the tiled Rendering
 /// this tupe of rendering permits to use the GBuffer without 
 /// explicitely writing on textures and then reading from them with the CPU
 class MT5TiledDeferredRenderer : NSObject, MTKViewDelegate {
@@ -158,12 +158,12 @@ class MT5TiledDeferredRenderer : NSObject, MTKViewDelegate {
         }
         normal.label = "Normal GBuffer Texture"
         
-        guard let depthPosition = _device.makeTexture(descriptor: gBufferTextureDesc) else {
-            fatalError("cannot create depthPosition texture")
+        guard let position = _device.makeTexture(descriptor: gBufferTextureDesc) else {
+            fatalError("cannot create position texture")
         }
-        depthPosition.label = "Albedo depthPosition Texture"
+        position.label = "Albedo position Texture"
         
-        _gBuffer = GBuffer(albedoSpecular: albedoSpecular, normal: normal, depth: depthPosition)
+        _gBuffer = GBuffer(albedoSpecular: albedoSpecular, normal: normal, position: position)
         
         //create pipeline
         
@@ -186,7 +186,7 @@ class MT5TiledDeferredRenderer : NSObject, MTKViewDelegate {
             descriptor.colorAttachments[0].pixelFormat = _metalView.colorPixelFormat
             descriptor.colorAttachments[Int(MT5RenderTargetAlbedo.rawValue)]?.pixelFormat = albedoDesc.pixelFormat
             descriptor.colorAttachments[Int(MT5RenderTargetNormal.rawValue)]?.pixelFormat = gBufferTextureDesc.pixelFormat
-            descriptor.colorAttachments[Int(MT5RenderTargetDepth.rawValue)]?.pixelFormat = gBufferTextureDesc.pixelFormat
+            descriptor.colorAttachments[Int(MT5RenderTargetPosition.rawValue)]?.pixelFormat = gBufferTextureDesc.pixelFormat
             descriptor.depthAttachmentPixelFormat = _metalView.depthStencilPixelFormat
         }
         
@@ -198,7 +198,7 @@ class MT5TiledDeferredRenderer : NSObject, MTKViewDelegate {
             descriptor.colorAttachments[0].pixelFormat = _metalView.colorPixelFormat
             descriptor.colorAttachments[Int(MT5RenderTargetAlbedo.rawValue)]?.pixelFormat = albedoDesc.pixelFormat
             descriptor.colorAttachments[Int(MT5RenderTargetNormal.rawValue)]?.pixelFormat = gBufferTextureDesc.pixelFormat
-            descriptor.colorAttachments[Int(MT5RenderTargetDepth.rawValue)]?.pixelFormat = gBufferTextureDesc.pixelFormat
+            descriptor.colorAttachments[Int(MT5RenderTargetPosition.rawValue)]?.pixelFormat = gBufferTextureDesc.pixelFormat
             descriptor.depthAttachmentPixelFormat = _metalView.depthStencilPixelFormat
         }
     }
@@ -216,7 +216,7 @@ class MT5TiledDeferredRenderer : NSObject, MTKViewDelegate {
     struct GBuffer {
         let albedoSpecular: MTLTexture
         let normal : MTLTexture
-        let depth : MTLTexture
+        let position : MTLTexture
     }
     
     private func _render(with view: MTKView) {
@@ -275,9 +275,9 @@ class MT5TiledDeferredRenderer : NSObject, MTKViewDelegate {
             descriptor.colorAttachments[Int(MT5RenderTargetNormal.rawValue)].storeAction = .dontCare
             descriptor.colorAttachments[Int(MT5RenderTargetNormal.rawValue)].texture = _gBuffer.normal
             
-            descriptor.colorAttachments[Int(MT5RenderTargetDepth.rawValue)].loadAction = .clear
-            descriptor.colorAttachments[Int(MT5RenderTargetDepth.rawValue)].storeAction = .dontCare
-            descriptor.colorAttachments[Int(MT5RenderTargetDepth.rawValue)].texture = _gBuffer.depth
+            descriptor.colorAttachments[Int(MT5RenderTargetPosition.rawValue)].loadAction = .clear
+            descriptor.colorAttachments[Int(MT5RenderTargetPosition.rawValue)].storeAction = .dontCare
+            descriptor.colorAttachments[Int(MT5RenderTargetPosition.rawValue)].texture = _gBuffer.position
             
             descriptor.depthAttachment.loadAction = .clear
             descriptor.depthAttachment.texture = view.depthStencilTexture

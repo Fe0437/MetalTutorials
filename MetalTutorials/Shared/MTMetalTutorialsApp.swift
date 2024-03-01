@@ -12,7 +12,7 @@ import SwiftUI
 struct MetalTutorialsApp: App {
     var body: some Scene {
         WindowGroup {
-            MT5ContentView()
+            MT6ContentView()
         }
     }
 }
