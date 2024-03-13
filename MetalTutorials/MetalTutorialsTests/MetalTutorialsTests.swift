@@ -75,7 +75,7 @@ class MetalTutorialsTests: XCTestCase {
         let differenceImage = CIBlendKernel.difference.apply(foreground: renderedImage, background: testImage)!
         let squaredImage = CIBlendKernel.multiply.apply(foreground: differenceImage, background: differenceImage)!
         let averageColorImage = squaredImage.applyingFilter("CIAreaAverage")
-        let averageColorCGImage = CIContext().createCGImage(averageColorImage, from: CGRect(512,512))!
+        let averageColorCGImage = CIContext().createCGImage(averageColorImage, from: CGRect(origin: CGPoint.zero, size: CGSize(width: 512,height: 512)))!
         let averageColor = averageColorCGImage[0,0]!.components!
         let RMSE = ((averageColor[0]+averageColor[1]+averageColor[2])*0.333).squareRoot()
         XCTAssertLessThan(  RMSE  , 0.1)

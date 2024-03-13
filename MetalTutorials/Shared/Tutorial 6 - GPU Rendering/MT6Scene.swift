@@ -51,7 +51,7 @@ struct MT6Scene {
         return "\(submesh.mesh!.name.split(separator: "-")[0])-\(property.name)"
     }
     
-    /// class public configurations \{
+    /// class public configurations @{
     ///
     struct ModelConfigs
     {
@@ -71,7 +71,7 @@ struct MT6Scene {
     var optionalLightPosition: SIMD3<Float>? = nil
     var modelConfigs:ModelConfigs = ModelConfigs()
     
-    /// \}
+    /// @}
 
     
     private(set) var mtkMeshes = [MTKMesh]()

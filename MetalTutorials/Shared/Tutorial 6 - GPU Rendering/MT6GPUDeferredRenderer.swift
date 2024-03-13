@@ -53,7 +53,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
         
         super.init()
         
-        // tutorial 6 - GPU Rendering \{
+        // tutorial 6 - GPU Rendering @{
         
         // 1 - create draw kernel
         _drawKernel =
@@ -75,7 +75,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
         _sendSceneToDrawKernel(_scene)
         
         
-        // \}
+        // @}
     }
     
     func _updateUniforms() {
@@ -117,16 +117,16 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
     {
         let nSubmeshes = scene.computedNSubmeshes
         
-        //argument encoder for the buffer MT6MeshesBuffer {
+        //argument encoder for the buffer MT6MeshesBuffer @{
         let meshArgumentEncoder = _drawKernel.makeArgumentEncoder(
             bufferIndex: Int(MT6MeshesBuffer.rawValue))
         meshArgumentEncoder.label = "Mesh Buffer Encoder"
         _sceneBuffer = _device.makeBuffer(
             length: meshArgumentEncoder.encodedLength * nSubmeshes, options: [])
         _sceneBuffer.label = "Mesh Buffer"
-        // }
+        //@}
         
-        // material arguments {
+        // material arguments @{
         guard let gBufferFragment = _library.makeFunction(name: "MT6::gbuffer_fragment")
         else {
             fatalError("missing MT6::gbuffer_fragment")
@@ -139,9 +139,9 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
           length: materialArgumentEncoder.encodedLength * nSubmeshes,
           options: [])
         _materialArgBuffer.label = "Material Arg Buffer"
-        //}
+        //@}
         
-        // shadows arguments {
+        // shadows arguments @{
         _shadowArgumentEncoder = gBufferFragment.makeArgumentEncoder(
           bufferIndex: Int(MT6ShadowsArgumentsBuffer.rawValue))
         //the encoder knows the necessary length
@@ -150,9 +150,9 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
           options: [])
         _shadowArgBuffer.label = "Shadow Arg Buffer"
         _shadowArgumentEncoder.setArgumentBuffer(_shadowArgBuffer, offset: 0)
-        //}
+        //@}
         
-        // draw arguments {
+        // draw arguments @{
         let drawLength = nSubmeshes *
           MemoryLayout<MTLDrawIndexedPrimitivesIndirectArguments>.stride
         _drawArgumentsBuffer = _device.makeBuffer(
@@ -164,7 +164,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
         _drawArgumentsBuffer!.contents().bindMemory(
             to: MTLDrawIndexedPrimitivesIndirectArguments.self,
             capacity: nSubmeshes)
-        // }
+        // @}
         
         
         var index = 0
@@ -245,7 +245,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
         }
     }
     
-    //MARK: MTKViewDelegate interface \{
+    //MARK: MTKViewDelegate interface @{
     
     ///whenever the size changes or orientation changes
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -363,9 +363,9 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
         _render(scene: _scene, with: view)
     }
     
-    // \}
+    // @}
     
-    //MARK: private  \{
+    //MARK: private  @{
     
     struct GBuffer {
         let albedo_specular: MTLTexture
@@ -500,9 +500,9 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
             encoder.useResource(
                 _shadowArgBuffer, usage: .read)
             
-            // shadow arguments {
+            // shadow arguments @{
             _shadowArgumentEncoder.setTexture(_shadowTexture, index: 0)
-            //}
+            //@}
             
             for mesh in _scene.mtkMeshes {
                 for submesh in mesh.submeshes {
@@ -793,6 +793,6 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
     private var _viewportSize = vector_uint2(100,100)
     private var _library : MTLLibrary! = nil
     
-    //\}
+    //@}
     
 }

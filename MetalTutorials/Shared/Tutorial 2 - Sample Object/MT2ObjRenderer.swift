@@ -45,9 +45,8 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
         )
     }
     
-    /// class public configurations \{
+    //MARK: class public configurations @{
 
-    
     struct ModelConfigs
     {
         var shouldRotateAroundBBox: Bool = true
@@ -78,9 +77,9 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
         _optionalCamera = camera
     }
 
-    /// \}
+    //@}
 
-    /// MTKViewDelegate methods \{
+    //MARK: MTKViewDelegate methods @{
     
     ///whenever the size changes or orientation changes
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -111,9 +110,9 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
         }
     }
 
-    /// \}
+    //@}
 
-    /// class private \{
+    //MARK: class private @{
     
     /// main function that renders the object
     /// Parameters:
@@ -361,7 +360,7 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
         _metalView.colorPixelFormat = .bgra8Unorm_srgb
         rndPipStatDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
         
-        // depth stencil \{
+        // depth stencil @{
         
         //they have to match
         _metalView.depthStencilPixelFormat = .depth32Float
@@ -415,6 +414,6 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
     var _pipelineState:MTLRenderPipelineState?
     var _viewportSize = vector_uint2(100,100)
 
-    // \}
+    //@}
     
 }

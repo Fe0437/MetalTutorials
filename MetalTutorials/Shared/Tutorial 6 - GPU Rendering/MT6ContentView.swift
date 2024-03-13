@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/// Welcome ! 🤗
+/// in this tutorial we are going to move all the rendering on the GPU, in this way we are going to leverage or the parallel computing power of the modern GPUs.
 struct MT6ContentView: View {
     var body: some View {
         MT6DeferredMetalView(filename: "toy_biplane_idle.usdz")
@@ -14,8 +16,6 @@ struct MT6ContentView: View {
     }
 }
 
-struct MT6ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        MT6ContentView()
-    }
+#Preview {
+    MT6ContentView()
 }

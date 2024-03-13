@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+/// Welcome ! 🤗
+/// In this tutorial we are going to add a shadow with the shadow map
+/// to our deferred renderer.
+/// This pass is going to be done before the other passes of the deferred renderer
 struct MT4ContentView: View {
     var body: some View {
         MT4DeferredMetalView(objName: "bunny")
@@ -14,8 +18,6 @@ struct MT4ContentView: View {
     }
 }
 
-struct MT4ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        MT4ContentView()
-    }
+#Preview {
+    MT4ContentView()
 }

@@ -1,10 +1,3 @@
-//
-//  BufferView.swift
-//  MetalTutorials
-//
-//  Created by federico forti on 09/02/24.
-//
-
 import MetalKit
 
 /// A wrapper around MTLBuffer which provides type safe access and assignment to the underlying MTLBuffer's contents.

@@ -10,8 +10,7 @@ import MetalKit
 import UIKit
 
 /**
- @brief This is a simple 2D triangle rendered using Metal. 
- 
+This is a simple 2D triangle rendered using Metal.
  - 👥 🖼 : this class is also a UIViewRepresentable which is used to create a SwiftUI view from the MTKView UIKit class.
  - 🥷 : inside the MTKView there is a MTRenderer that is the class that manages the rendering of the triangle, through the MTKViewDelegate interface.
  */
@@ -34,8 +33,8 @@ struct MT1Simple2DTriangleMetalView: UIViewRepresentable {
                 let library = _device.makeDefaultLibrary()!
                 
                 //create the vertex and fragment shaders
-                let vertexFunction = library.makeFunction(name: "mt1VertexShader")
-                let fragmentFunction = library.makeFunction(name: "mt1FragmentShader")
+                let vertexFunction = library.makeFunction(name: "MT1::VertexShader")
+                let fragmentFunction = library.makeFunction(name: "MT1::FragmentShader")
                 
                 //create the pipeline we will run during draw
                 //this pipeline will use the vertex and fragment shader we have defined here

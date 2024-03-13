@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// Welcome ! 🤗
+/// In this tutorial we are going to use tile rendering for our deferred renderer.
+/// Using tile rendering we can avoid creating multiple passes to create the textures necessary for deferred rendering because those textures are going to be computed per tile.
 struct MT5ContentView: View {
     var body: some View {
         MT5DeferredMetalView(objName: "bunny")
@@ -14,8 +17,7 @@ struct MT5ContentView: View {
     }
 }
 
-struct MT5ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        MT5ContentView()
-    }
+#Preview {
+    MT5ContentView()
 }
+

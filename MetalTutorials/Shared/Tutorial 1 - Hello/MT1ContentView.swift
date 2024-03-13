@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Welcome ! 🤗
 /// in this tutorial we are going to render a simple 2D triangle using Metal
 struct MT1ContentView: View {
     var body: some View {
@@ -16,8 +17,6 @@ struct MT1ContentView: View {
     }
 }
 
-struct MT1ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        MT1ContentView()
-    }
+#Preview {
+    MT1ContentView()
 }

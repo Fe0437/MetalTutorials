@@ -18,6 +18,7 @@ typedef struct
 {
     vector_float2 position;
     vector_float4 color;
+    
 } MT1Vertex;
 
 #endif /* MTVertex_h */

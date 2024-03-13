@@ -59,7 +59,7 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         _retrieveDataFromAsset(meshAsset)
     }
     
-     /// class public configurations \{
+     /// class public configurations @{
     
     struct ModelConfigs
     {
@@ -91,9 +91,9 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         _optionalCamera = camera
     }
 
-    /// \}
+    /// @}
 
-    /// MTKViewDelegate \{
+    /// MTKViewDelegate @{
     
     ///whenever the size changes or orientation changes build the pipelines and store the new size
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -172,10 +172,10 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         _render(with: view)
     }
 
-    /// \}
+    /// @}
 
 
-    /// private \{
+    /// private @{
     
     /// GBuffer textures which are going to used to store the information of the scene
     struct GBuffer {
@@ -496,6 +496,6 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
     var _displayPipelineState: MTLRenderPipelineState!
     var _viewportSize = vector_uint2(100,100)
 
-    /// \}
+    /// @}
     
 }

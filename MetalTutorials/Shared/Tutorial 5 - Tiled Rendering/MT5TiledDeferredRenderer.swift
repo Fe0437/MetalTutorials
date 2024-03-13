@@ -68,7 +68,7 @@ class MT5TiledDeferredRenderer : NSObject, MTKViewDelegate {
     }
     
     
-    /// class public configurations \{
+    /// class public configurations @{
     
     struct ModelConfigs
     {
@@ -100,9 +100,9 @@ class MT5TiledDeferredRenderer : NSObject, MTKViewDelegate {
         _optionalCamera = camera
     }
     
-    /// \}
+    /// @}
 
-    ///MTKViewDelegate \{
+    ///MTKViewDelegate @{
 
     ///whenever the size changes or orientation changes
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -209,9 +209,9 @@ class MT5TiledDeferredRenderer : NSObject, MTKViewDelegate {
         _render(with: view)
     }
 
-    /// \}
+    /// @}
 
-    ///private \{
+    ///private @{
 
     struct GBuffer {
         let albedoSpecular: MTLTexture

@@ -175,7 +175,7 @@ namespace MT4 {
         
         //simplify pi here
         const float3 f_diffuse = albedo.xyz * rho / M_PI_F;
-        const float3 L_o = M_PI_F * NdotL * dot(f_reflection + f_diffuse, Lcolor);
+        const float3 L_o = M_PI_F * NdotL * Lcolor * (f_reflection + f_diffuse);
         return float4(L_o,1);
     }
     

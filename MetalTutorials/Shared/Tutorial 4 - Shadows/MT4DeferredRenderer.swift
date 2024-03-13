@@ -64,7 +64,7 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         
     }
     
-    /// class public configurations \{
+    /// class public configurations @{
     
     struct ModelConfigs
     {
@@ -96,9 +96,9 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         _optionalCamera = camera
     }
 
-    /// \}
+    /// @}
     
-    ///MTKViewDelegate \{
+    ///MTKViewDelegate @{
     
     ///whenever the size changes or orientation changes
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -106,7 +106,7 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         _viewportSize.x = UInt32(size.width)
         _viewportSize.y = UInt32(size.height)
         
-        ///tutorial 4 - Shadows \{
+        ///tutorial 4 - Shadows @{
 
         //create shadow texture
         let shadowextureDesc = MTLTextureDescriptor
@@ -124,7 +124,7 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         shadowTexture.label = "Shadow Depth Texture"
         _shadowTexture = shadowTexture
 
-        /// \}
+        /// @}
                 
         //create gBuffer textures
         let albedoDesc = MTLTextureDescriptor
@@ -164,7 +164,7 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         
         //create pipeline
         
-        ///tutorial 4 - Shadows \{
+        ///tutorial 4 - Shadows @{
 
         _shadowPSO = _buildPipeline(
             vertexFunctionName: "MT4::vertex_depth",
@@ -177,7 +177,7 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
             descriptor.stencilAttachmentPixelFormat = .invalid
         }
 
-        /// \}
+        /// @}
         
         _gBufferPSO = _buildPipeline(
             vertexFunctionName: "MT4::vertex_main",
@@ -214,10 +214,10 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         _render(with: view)
     }
 
-    /// \}
+    /// @}
 
 
-    /// private \{
+    /// private @{
     
     struct GBuffer {
         let albedoSpecular: MTLTexture
@@ -243,7 +243,7 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
         var uniforms = _buildUniforms(view, modelMatrix: modelMatrix)
         var planeUniforms = _buildUniforms(view, modelMatrix:  float4x4(translationBy: -center) * float4x4(rotationAbout: SIMD3<Float>(0, 0, 1), by: Float.pi * -0.5))
         
-        ///tutorial 4 - Shadows \{
+        ///tutorial 4 - Shadows @{
 
         //shadow pass
 

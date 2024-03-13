@@ -7,15 +7,16 @@
 
 import SwiftUI
 
+/// Welcome ! 🤗
+/// In this tutorial we are going to render a sample object stored in Resources as obj.
+/// the default object to render is the standard Standford Bunny
 struct MT2ContentView: View {
     var body: some View {
-        MT2SampleObjectMetalView(objName: "bunny")
+        Text("bunny")
             .navigationTitle("Tutorial 2!")
     }
 }
 
-struct MT2ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        MT2ContentView()
-    }
+#Preview {
+    MT2ContentView()
 }

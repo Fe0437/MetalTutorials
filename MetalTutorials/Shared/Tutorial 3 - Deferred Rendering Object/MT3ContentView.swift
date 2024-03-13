@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/// Welcome ! 🤗
+/// In this tutorial we are going to create a deferred renderer for our object
 struct MT3ContentView: View {
     var body: some View {
         MT3DeferredMetalView(objName: "bunny")
@@ -14,8 +16,6 @@ struct MT3ContentView: View {
     }
 }
 
-struct MT3ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        MT3ContentView()
-    }
+#Preview {
+    MT3ContentView()
 }

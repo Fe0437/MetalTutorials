@@ -13,7 +13,7 @@ namespace MT3 {
     
     using namespace metal;
 
-    ///tutorial 2 \{
+    //MARK: tutorial 2 @{
     
     struct VertexIn {
         float3 position  [[attribute(0)]];
@@ -109,13 +109,13 @@ namespace MT3 {
         
         //simplify pi here
         const float3 f_diffuse = albedo.xyz * rho / M_PI_F;
-        const float3 L_o = M_PI_F * NdotL * dot(f_reflection + f_diffuse, Lcolor);
+        const float3 L_o = M_PI_F * NdotL * Lcolor * (f_reflection + f_diffuse);
         return float4(L_o,1);
     }
     
-    /// \}
+    //@}
     
-    ///tutorial 3 \{
+    //MARK: tutorial 3 @{
 
     /// GBuffer render targets, each value is associated with a render target through the render pass
     /// in this way the fragment shader is going to write on all the render targets
@@ -185,5 +185,5 @@ namespace MT3 {
         return calculate_out_radiance(albedo_specular_at_pix, L, N, V);
     }
     
-    /// \}
+    // @}
 }
