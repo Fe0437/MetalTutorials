@@ -12,9 +12,24 @@ import SwiftUI
 /// to our deferred renderer.
 /// This pass is going to be done before the other passes of the deferred renderer
 struct MT4ContentView: View {
+    
+    ///edit this property to modify the camera of the deferred renderer
+    @State var camera = MT4Camera()
+    ///velocity of the camera
+    let velocity = 0.1
+
     var body: some View {
-        MT4DeferredMetalView(objName: "bunny")
-            .navigationTitle("Tutorial 4")
+        GeometryReader{ proxy in
+            MT4DeferredMetalView(objName: "bunny", camera: $camera)
+                .navigationTitle("Tutorial 4!")
+                .gesture(
+                    DragGesture()
+                        .onChanged { gesture in
+                            camera.rotation *= simd_quatf(angle: Float(velocity * gesture.translation.width/proxy.size.width), axis: SIMD3<Float>(0,1,0))
+                            camera.rotation *= simd_quatf(angle: Float(velocity * gesture.translation.height/proxy.size.height), axis: SIMD3<Float>(1,0,0))
+                        }
+                )
+        }
     }
 }
 

@@ -12,10 +12,11 @@ import SwiftUI
 /// the default object to render is the standard Standford Bunny
 struct MT2ContentView: View {
     var body: some View {
-        Text("bunny")
+        MT2SampleObjectMetalView(objName: "bunny")
             .navigationTitle("Tutorial 2!")
     }
 }
+
 
 #Preview {
     MT2ContentView()

@@ -10,9 +10,25 @@ import MetalKit
 import ModelIO
 import OSLog
 
+/// @group public configurations
+struct MT6ModelConfigs
+{
+    var shouldRotateAroundBBox: Bool = true
+}
+
+/// @group public configurations
+struct MT6Camera
+{
+    // identity
+    var rotation = simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
+    var fov: Float = Float.pi / 3
+    var nearZ: Float = 0.1
+    var farZ: Float = 100
+}
+
 /// 🌆: Scene to render
 /// here are grouped all the methods and properties of the scene we want to render.
-struct MT6Scene {
+class MT6Scene : MT6SceneDelegate {
     
     let basePlaneAssetFile = "base-plane.usdz"
         
@@ -53,24 +69,27 @@ struct MT6Scene {
     
     /// class public configurations @{
     ///
-    struct ModelConfigs
+    func setLightPosition(_ lightPosition: SIMD3<Float>)
     {
-        var shouldRotateAroundBBox: Bool = true
+        _lightPosition = lightPosition;
     }
     
-    struct Camera
+    func setModelConfigs(_ modelConfigs: MT6ModelConfigs)
     {
-        var lookAt: (origin:SIMD3<Float>, target:SIMD3<Float>)
-        var fov: Float
-        var aspectRatio: Float
-        var nearZ: Float
-        var farZ: Float
+        _modelConfigs = modelConfigs
     }
     
-    var optionalCamera:Camera? = nil
-    var optionalLightPosition: SIMD3<Float>? = nil
-    var modelConfigs:ModelConfigs = ModelConfigs()
+    func setCamera(camera: MT6Camera)
+    {
+        _camera = camera
+    }
     
+    private var _lightPosition = SIMD3<Float>(20,20,10)
+    var bboxRelativeLightPosition : SIMD3<Float> {
+        bbox.maxBounds + _lightPosition
+    }
+    private var _modelConfigs = MT6ModelConfigs()
+    private var _camera = MT6Camera()
     /// @}
 
     
@@ -83,6 +102,27 @@ struct MT6Scene {
     private(set) var instancesMatrices = [float4x4?]()
     private(set) static var staticGPUHeap: MTLHeap!
     
+    var center : SIMD3<Float>{
+        (bbox.maxBounds + bbox.minBounds)*0.5
+    }
+    
+    var extent : SIMD3<Float> {
+        bbox.maxBounds - bbox.minBounds;
+    }
+    
+    var shadowViewMatrix : float4x4 {float4x4(origin: bboxRelativeLightPosition, target: center, up: SIMD3<Float>(0,1,0))}
+    var shadowProjectionMatrix : float4x4 { float4x4(perspectiveProjectionFov:  45/180 * Float.pi, aspectRatio: 1, nearZ: 0.1, farZ: 10000) }
+    
+    //world to camera view
+    var viewMatrix : float4x4 { 
+        let origin = _camera.rotation.act(SIMD3<Float>(0, 0, (2+extent.z)))
+        return float4x4(origin: origin, target: SIMD3<Float>(0,0,0), up: SIMD3<Float>(0,1,0)) }
+    
+    func projectionMatrix(to size: CGSize) -> float4x4 {
+        let aspectRatio = Float(size.width / size.height)
+        return float4x4(perspectiveProjectionFov: _camera.fov, aspectRatio: aspectRatio, nearZ: _camera.nearZ, farZ: _camera.farZ)
+    }
+    
     static func getTexture(for submesh: MTKSubmesh, andProperty property: MDLMaterialProperty) -> MTLTexture? {
         guard let index = texNameToIndex[getUniqueTexName(submesh, property)] else {return nil}
         return _orderedMTLTextures[index]
@@ -92,7 +132,7 @@ struct MT6Scene {
         mtkMeshes.reduce(0, {$0 + $1.submeshes.count})
     }
     
-    mutating func computeNewFrame(){
+    func computeNewFrame(){
         _computeCurrentRotationAngle()
         instancesMatrices.removeAll(keepingCapacity: true)
         instancesMatrices.append(contentsOf: repeatElement(computeModelMatrix(), count: computedNSubmeshes-1))
@@ -102,7 +142,7 @@ struct MT6Scene {
     func computeModelMatrix() -> float4x4? {
         var modelMatrix:float4x4?
         let center = (bbox.maxBounds + bbox.minBounds)*0.5
-        if(modelConfigs.shouldRotateAroundBBox)
+        if(_modelConfigs.shouldRotateAroundBBox)
         {
             //model to world
             modelMatrix =
@@ -116,7 +156,7 @@ struct MT6Scene {
         return float4x4(translationBy: -center) * float4x4(scaleBy: 100) * float4x4(rotationAbout: SIMD3<Float>(1, 0, 0), by: Float.pi * -0.5)
     }
     
-    private mutating func _retrieveDataFromAsset(_ mdlAsset: MDLAsset) {
+    private func _retrieveDataFromAsset(_ mdlAsset: MDLAsset) {
         mdlAsset.loadTextures()
 
         guard
@@ -130,7 +170,7 @@ struct MT6Scene {
         mtkMeshes.append(contentsOf: meshes.metalKitMeshes)
     }
     
-    private mutating func _computeCurrentRotationAngle() {
+    private func _computeCurrentRotationAngle() {
         let time = CACurrentMediaTime()
         
         if _currentTime != nil {

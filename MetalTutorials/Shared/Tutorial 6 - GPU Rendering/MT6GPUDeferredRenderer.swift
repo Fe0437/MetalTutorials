@@ -25,8 +25,8 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
      */
     init(metalView: MTKView, commandQueue: MTLCommandQueue, scene: MT6Scene) {
         
-        _metalView = metalView
-        _scene = scene
+        self._metalView = metalView
+        self.scene = scene
 
         // Set the pixel formats of the render destination.
         _metalView.depthStencilPixelFormat = .depth32Float_stencil8
@@ -70,9 +70,9 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
         _updateUniforms()
         
         // 3 - setup the draw kernel that is going to draw using an indirect command buffer
-        self._indirectCommandB = _buildIndirectCommandBuffer(_scene)
+        self._indirectCommandB = _buildIndirectCommandBuffer(scene)
         _setupICBOnDrawKernel(self._indirectCommandB, with: _drawKernel)
-        _sendSceneToDrawKernel(_scene)
+        _sendSceneToDrawKernel(scene)
         
         
         // @}
@@ -80,7 +80,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
     
     func _updateUniforms() {
         
-     (_vertexUniformsArray, _fragmentUniforms) = _buildUniforms(_metalView, scene: _scene)
+     (_vertexUniformsArray, _fragmentUniforms) = _buildUniforms(_metalView, scene: scene)
       
     _vertexUniformsBuffer.contents().copyMemory(
         from: &_vertexUniformsArray,
@@ -124,7 +124,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
         _sceneBuffer = _device.makeBuffer(
             length: meshArgumentEncoder.encodedLength * nSubmeshes, options: [])
         _sceneBuffer.label = "Mesh Buffer"
-        //@}
+        // }
         
         // material arguments @{
         guard let gBufferFragment = _library.makeFunction(name: "MT6::gbuffer_fragment")
@@ -196,7 +196,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
                 materialArgumentEncoder.setArgumentBuffer(_materialArgBuffer , startOffset: 0, arrayElement: index)
                 
                 //set all the textures for the argument buffer
-                guard let mdlSubmesh = _scene.mapMTKSubmeshToMDLMesh[submesh] else {
+                guard let mdlSubmesh = scene.mapMTKSubmeshToMDLMesh[submesh] else {
                     fatalError("the mesh has not been mapped")
                 }
                 
@@ -318,7 +318,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
             descriptor.depthAttachmentPixelFormat = .depth32Float
             descriptor.stencilAttachmentPixelFormat = .invalid
             descriptor.supportIndirectCommandBuffers = true
-            descriptor.vertexDescriptor = _scene.vertexDescriptor
+            descriptor.vertexDescriptor = scene.vertexDescriptor
         }
         
         _gBufferPSO = _buildPipeline(
@@ -333,7 +333,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
             descriptor.depthAttachmentPixelFormat = _metalView.depthStencilPixelFormat
             descriptor.stencilAttachmentPixelFormat = _metalView.depthStencilPixelFormat
             descriptor.supportIndirectCommandBuffers = true
-            descriptor.vertexDescriptor = _scene.vertexDescriptor
+            descriptor.vertexDescriptor = scene.vertexDescriptor
         }
         
         _displayPipelineState = _buildPipeline(
@@ -358,9 +358,9 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
     ///here you create a command buffer
     ///encode commands that tells to the gpu what to draw
     func draw(in view: MTKView) {
-        _scene.computeNewFrame()
+        scene.computeNewFrame()
         _updateUniforms()
-        _render(scene: _scene, with: view)
+        _render(scene: scene, with: view)
     }
     
     // @}
@@ -416,7 +416,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
             encoder.useResource(
                 _shadowArgBuffer, usage: .read)
             
-            for mesh in _scene.mtkMeshes {
+            for mesh in scene.mtkMeshes {
                 for submesh in mesh.submeshes {
                     encoder.useResource(
                         mesh.vertexBuffers[Int(MT6VertexBuffer.rawValue)].buffer,
@@ -432,7 +432,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
             }
             
             let threadExecutionWidth = _drawKernelPSO.threadExecutionWidth
-            let threads = MTLSize(width: _scene.computedNSubmeshes, height: 1, depth: 1)
+            let threads = MTLSize(width: scene.computedNSubmeshes, height: 1, depth: 1)
             encoder.dispatchThreads(
               threads,
               threadsPerThreadgroup:
@@ -442,10 +442,10 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
             renderEncoder.setRenderPipelineState(_shadowPSO)
             renderEncoder.setDepthStencilState(_depthStencilState)
             renderEncoder.executeCommandsInBuffer(
-                _indirectCommandB, range: 0..<_scene.computedNSubmeshes)
+                _indirectCommandB, range: 0..<scene.computedNSubmeshes)
         })
         
-        _indirectCommandB.reset(0..<_scene.computedNSubmeshes)
+        _indirectCommandB.reset(0..<scene.computedNSubmeshes)
         
         let tiledDeferredRenderPassDescriptor: MTLRenderPassDescriptor = {
             //tutorial 5 - without passing the metal view render pass descriptor is not going to work with the texture [0]
@@ -500,11 +500,11 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
             encoder.useResource(
                 _shadowArgBuffer, usage: .read)
             
-            // shadow arguments @{
+            // shadow arguments {
             _shadowArgumentEncoder.setTexture(_shadowTexture, index: 0)
             //@}
             
-            for mesh in _scene.mtkMeshes {
+            for mesh in scene.mtkMeshes {
                 for submesh in mesh.submeshes {
                     encoder.useResource(
                         mesh.vertexBuffers[Int(MT6VertexBuffer.rawValue)].buffer,
@@ -520,7 +520,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
             }
             
             let threadExecutionWidth = _drawKernelPSO.threadExecutionWidth
-            let threads = MTLSize(width: _scene.computedNSubmeshes, height: 1, depth: 1)
+            let threads = MTLSize(width: scene.computedNSubmeshes, height: 1, depth: 1)
             encoder.dispatchThreads(
               threads,
               threadsPerThreadgroup: 
@@ -534,7 +534,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
                 renderEncoder.setRenderPipelineState(_gBufferPSO)
                 renderEncoder.setDepthStencilState(_depthStencilState)
                 renderEncoder.executeCommandsInBuffer(
-                    _indirectCommandB, range: 0..<_scene.computedNSubmeshes)
+                    _indirectCommandB, range: 0..<scene.computedNSubmeshes)
             }
             
             _encodeStage(using: renderEncoder, label: "Compose")
@@ -593,36 +593,18 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
     
     private func _buildUniforms(_ view:MTKView, scene: MT6Scene) -> ([MT6VertexUniforms], MT6FragmentUniforms)
     {
-        let lightPosition = scene.optionalLightPosition ?? scene.bbox.maxBounds + SIMD3<Float>(30,30,20)
-        let center = (scene.bbox.maxBounds + scene.bbox.minBounds)*0.5
-        let extent = scene.bbox.maxBounds - scene.bbox.minBounds;
-
-        // tutorial 4 - shadows
-        let shadowViewMatrix = float4x4(origin: lightPosition, target: center, up: SIMD3<Float>(0,1,0))
-        let shadowProjectionMatrix = float4x4(perspectiveProjectionFov:  45/180 * Float.pi, aspectRatio: 1, nearZ: 0.1, farZ: 10000)
-        
         //world to camera view
-        var viewMatrix:float4x4!
-        var projectionMatrix: float4x4!
-        var aspectRatio: Float!
-        if let camera = scene.optionalCamera
-        {
-            viewMatrix = float4x4(origin: camera.lookAt.origin, target: camera.lookAt.target, up: SIMD3<Float>(0,1,0))
-            aspectRatio = camera.aspectRatio
-            projectionMatrix = float4x4(perspectiveProjectionFov: camera.fov, aspectRatio: aspectRatio, nearZ: camera.nearZ, farZ: camera.farZ)
-        }
-        else
-        {
-            //default construction
-            viewMatrix = float4x4(translationBy: SIMD3<Float>(0, 0, -(2+extent.z)))
-            aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
-            projectionMatrix = float4x4(perspectiveProjectionFov: Float.pi / 3, aspectRatio: aspectRatio, nearZ: 0.1, farZ: 100)
-        }
+        let viewMatrix = scene.viewMatrix
+        let projectionMatrix = scene.projectionMatrix(to: view.drawableSize)
+        
+        // tutorial 4 - shadows
+        let shadowViewMatrix = scene.shadowViewMatrix
+        let shadowProjectionMatrix = scene.shadowProjectionMatrix
         
         var vertexUniformsArray = [MT6VertexUniforms]()
         for instanceMatrix in scene.instancesMatrices {
         
-            let modelView = instanceMatrix != nil ? viewMatrix! * instanceMatrix! : viewMatrix!
+            let modelView = instanceMatrix != nil ? viewMatrix * instanceMatrix! : viewMatrix
             let modelViewProjection = projectionMatrix * modelView
             
             let shadowModelView = instanceMatrix != nil ? shadowViewMatrix * instanceMatrix! : shadowViewMatrix
@@ -645,7 +627,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
             vertexUniformsArray.append(vertexUniforms)
         }
         
-        let viewLightPosition =  viewMatrix * SIMD4<Float>(lightPosition, 1);
+        let viewLightPosition =  viewMatrix * SIMD4<Float>(scene.bboxRelativeLightPosition, 1);
         let fragmentUniforms = MT6FragmentUniforms(viewLightPosition: viewLightPosition)
 
         return (vertexUniformsArray, fragmentUniforms)
@@ -746,7 +728,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
         // ( you need to knwo in advance the number of draw calls )
         guard let indirectBuffer = _device.makeIndirectCommandBuffer(
           descriptor: desc,
-          maxCommandCount: _scene.computedNSubmeshes,
+          maxCommandCount: scene.computedNSubmeshes,
           options: []) else { fatalError("Failed to create ICB") }
 
         return indirectBuffer
@@ -754,7 +736,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
     
     
     //tutorial 6 - GPU Rendering
-    private var _scene: MT6Scene
+    public var scene: MT6Scene
     private var _indirectCommandB: MTLIndirectCommandBuffer! = nil
     private var _computeKernelIndirectCommandBuffer: MTLBuffer! = nil
     private var _vertexUniformsArray = [MT6VertexUniforms]()

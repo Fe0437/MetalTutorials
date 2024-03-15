@@ -10,9 +10,24 @@ import SwiftUI
 /// Welcome ! 🤗
 /// in this tutorial we are going to move all the rendering on the GPU, in this way we are going to leverage or the parallel computing power of the modern GPUs.
 struct MT6ContentView: View {
+    
+    ///edit this property to modify the camera of the deferred renderer
+    @State var camera = MT6Camera()
+    ///velocity of the camera
+    let velocity = 0.1
+
     var body: some View {
-        MT6DeferredMetalView(filename: "toy_biplane_idle.usdz")
-            .navigationTitle("Tutorial 6")
+        GeometryReader{ proxy in
+            MT6DeferredMetalView(filename: "toy_biplane_idle.usdz", camera: $camera)
+                .navigationTitle("Tutorial 6!")
+                .gesture(
+                    DragGesture()
+                        .onChanged { gesture in
+                            camera.rotation *= simd_quatf(angle: Float(velocity * gesture.translation.width/proxy.size.width), axis: SIMD3<Float>(0,1,0))
+                            camera.rotation *= simd_quatf(angle: Float(velocity * gesture.translation.height/proxy.size.height), axis: SIMD3<Float>(1,0,0))
+                        }
+                )
+        }
     }
 }
 

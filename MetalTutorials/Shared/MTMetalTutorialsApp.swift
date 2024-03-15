@@ -28,7 +28,7 @@ struct MetalTutorialsApp: App {
     var body: some Scene {
         WindowGroup {
             // substitute here to choose the tutorial
-            MT5ContentView()
+            MT6ContentView()
         }
     }
 }

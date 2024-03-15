@@ -12,11 +12,26 @@ import ModelIO
 import Combine
 import simd
 
-/// tutorial 3 - deferred rendering
+/// @group public configurations
+struct MT3ModelConfigs
+{
+    var shouldRotateAroundBBox: Bool = true
+}
 
+/// @group public configurations
+struct MT3Camera
+{
+    // identity
+    var rotation = simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
+    var fov: Float = Float.pi / 3
+    var nearZ: Float = 0.1
+    var farZ: Float = 100
+}
+
+/// @group tutorial 3 - deferred rendering
 /// 🥷: Main class that is managing all the rendering of the view.
 ///🧩🧩🧩 ⏩️ 🖼️: rendering a .obj and a point light in a deferred rendering pipeline.
-class MT3DeferredRenderer : NSObject, MTKViewDelegate {
+class MT3DeferredRenderer : NSObject, MTKViewDelegate, MT3SceneDelegate {
      
     
     /// initialize the renderer with the metal view and the obj name
@@ -59,42 +74,31 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         _retrieveDataFromAsset(meshAsset)
     }
     
-     /// class public configurations @{
+     //MARK: class public configurations @{
     
-    struct ModelConfigs
-    {
-        var shouldRotateAroundBBox: Bool = true
-    }
-    
-    struct Camera
-    {
-        var lookAt: (origin:SIMD3<Float>, target:SIMD3<Float>)
-        var fov: Float
-        var aspectRatio: Float
-        var nearZ: Float
-        var farZ: Float
-    }
-
-
+    /// @group public configurations
     func setLightPosition(_ lightPosition: SIMD3<Float>)
     {
-        _optionalLightPosition = lightPosition;
+        _lightPosition = lightPosition;
     }
     
-    func setModelConfigs(_ modelConfigs: ModelConfigs)
+    /// @group public configurations
+    func setModelConfigs(_ modelConfigs: MT3ModelConfigs)
     {
         _modelConfigs = modelConfigs
     }
     
-    func setCamera(camera:Camera)
+    /// @group public configurations
+    func setCamera(camera:MT3Camera)
     {
-        _optionalCamera = camera
+        _camera = camera
     }
-
-    /// @}
-
-    /// MTKViewDelegate @{
     
+    // class public configurations @}
+
+    //MARK: MTKViewDelegate @{
+    
+    /// @group MTKViewDelegate
     ///whenever the size changes or orientation changes build the pipelines and store the new size
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         
@@ -164,6 +168,7 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         }
     }
     
+    /// @group MTKViewDelegate
     ///here you create a command buffer
     ///encode commands that tells to the gpu what to draw
     func draw(in view: MTKView) {
@@ -175,7 +180,7 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
     /// @}
 
 
-    /// private @{
+    //MARK: private @{
     
     /// GBuffer textures which are going to used to store the information of the scene
     struct GBuffer {
@@ -184,6 +189,7 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         let position : MTLTexture
     }
 
+    /// main render function
     private func _render(with view: MTKView) {
         /// create the new command buffer for this pass
 
@@ -321,39 +327,29 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         
     }
     
+    /// build the uniforms for the vertex and fragment shaders containing the projection matrix of the camera
+    /// and the modelView matrix
     private func _buildUniforms(_ view:MTKView) -> (MT3VertexUniforms, MT3FragmentUniforms)
     {
-        var modelMatrix:float4x4?
-        if(_modelConfigs.shouldRotateAroundBBox)
-        {
-            let center = (_objboundingBox.maxBounds + _objboundingBox.minBounds)*0.5
-            
-            //model to world
-            modelMatrix =
-                float4x4(rotationAbout: SIMD3<Float>(0, 1, 0), by: Float(_currentAngle)) * float4x4(translationBy: -center)
-        }
+        let modelMatrix:float4x4? = {
+            if(_modelConfigs.shouldRotateAroundBBox)
+            {
+                let center = (_objboundingBox.maxBounds + _objboundingBox.minBounds)*0.5
+                
+                //model to world
+                return float4x4(rotationAbout: SIMD3<Float>(0, 1, 0), by: Float(_currentAngle)) * float4x4(translationBy: -center)
+            }
+            return nil
+        }()
         
         //world to camera view
-        var viewMatrix:float4x4!
-        var projectionMatrix: float4x4!
-        var aspectRatio: Float!
-        if let camera = _optionalCamera
-        {
-            viewMatrix = float4x4(origin: camera.lookAt.origin, target: camera.lookAt.target, up: SIMD3<Float>(0,1,0))
-            aspectRatio = camera.aspectRatio
-            projectionMatrix = float4x4(perspectiveProjectionFov: camera.fov, aspectRatio: aspectRatio, nearZ: camera.nearZ, farZ: camera.farZ)
-        }
-        else
-        {
-            //default construction
-            let extent = _objboundingBox.maxBounds - _objboundingBox.minBounds;
-            viewMatrix = float4x4(translationBy: SIMD3<Float>(0, 0, -(2+extent.z)))
-            aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
-            projectionMatrix = float4x4(perspectiveProjectionFov: Float.pi / 3, aspectRatio: aspectRatio, nearZ: 0.1, farZ: 100)
-        }
-        
-        
-        let modelView = modelMatrix != nil ? viewMatrix! * modelMatrix! : viewMatrix!
+        let extent = _objboundingBox.maxBounds - _objboundingBox.minBounds;
+        let origin = _camera.rotation.act(SIMD3<Float>(0, 0, (2+extent.z)))
+        let target = SIMD3<Float>(0,0,0)
+        let viewMatrix = float4x4(origin: origin, target: target, up: SIMD3<Float>(0,1,0))
+        let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
+        let projectionMatrix = float4x4(perspectiveProjectionFov: _camera.fov, aspectRatio: aspectRatio, nearZ: _camera.nearZ, farZ: _camera.farZ)
+        let modelView = modelMatrix != nil ? viewMatrix * modelMatrix! : viewMatrix
         let modelViewProjection = projectionMatrix * modelView
         
         // transformations necessary to handle correctly normals
@@ -364,8 +360,7 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
                                     modelView.columns.1[indeces],
                                     modelView.columns.2[indeces]).transpose.inverse
         
-        let lightPosition = _optionalLightPosition ?? _objboundingBox.maxBounds + SIMD3<Float>(100,0,30)
-        
+        let lightPosition = _objboundingBox.maxBounds + _lightPosition
         let viewLightPosition =  viewMatrix * SIMD4<Float>(lightPosition, 1);
         
         let vertexUniforms = MT3VertexUniforms(
@@ -383,7 +378,7 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         return MTLViewport(originX: 0.0, originY: 0.0, width: Double(_viewportSize.x), height: Double(_viewportSize.y), znear: 0.0, zfar: 1.0)
     }
     
-    
+    /// build a pipeline passing a lambda to customize the descriptor before creating it.
     private func _buildPipeline(
         vertexFunction:String, fragmentFunction:String, label: String, customize: (MTLRenderPipelineDescriptor) -> Void) -> MTLRenderPipelineState  {
         
@@ -412,8 +407,8 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
         }
     }
     
-    // !without this is gonna render -- but it will not be able to
-    // understand what is behind and what is not
+    /// !without this is gonna render -- but it will not be able to
+    /// understand what is behind and what is not
     static private func _buildDepthStencilState(device: MTLDevice) -> MTLDepthStencilState {
         let depthStencilDescriptor = MTLDepthStencilDescriptor()
         // whether a fragment passes the so-called depth test
@@ -456,7 +451,7 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
     }
     
     
-    ///tutorial 3 - deferred rendering
+    //tutorial 3 - deferred rendering
 
     private var _gBuffer : GBuffer!
     
@@ -476,26 +471,27 @@ class MT3DeferredRenderer : NSObject, MTKViewDelegate {
     
     //tutorial2 - Sample object
 
-    var _library : MTLLibrary! = nil
-    var _optionalLightPosition: SIMD3<Float>?
-    var _modelConfigs:ModelConfigs = ModelConfigs()
-    var _optionalCamera:Camera?
-    var _objboundingBox:MDLAxisAlignedBoundingBox!
-    var _currentAngle:Double = 0
-    var _currentTime:CFTimeInterval?
-    var _meshes:[MTKMesh]!
-    var _vertexDescriptor: MTLVertexDescriptor!
-    let _depthStencilState: MTLDepthStencilState
+    private var _library : MTLLibrary! = nil
+    /// position of the light from max bounds of the object
+    private var _lightPosition = SIMD3<Float>(20,20,10)
+    private var _modelConfigs = MT3ModelConfigs()
+    private var _camera = MT3Camera()
+    private var _objboundingBox:MDLAxisAlignedBoundingBox!
+    private var _currentAngle:Double = 0
+    private var _currentTime:CFTimeInterval?
+    private var _meshes:[MTKMesh]!
+    private var _vertexDescriptor: MTLVertexDescriptor!
+    private let _depthStencilState: MTLDepthStencilState
     
     //tutorial 1 - Hello
 
-    let _metalView:MTKView!
-    let _device:MTLDevice!
-    let _commandQueue:MTLCommandQueue!
-    var _gBuffPipelineState:MTLRenderPipelineState!
-    var _displayPipelineState: MTLRenderPipelineState!
-    var _viewportSize = vector_uint2(100,100)
+    private let _metalView:MTKView!
+    private let _device:MTLDevice!
+    private let _commandQueue:MTLCommandQueue!
+    private var _gBuffPipelineState:MTLRenderPipelineState!
+    private var _displayPipelineState: MTLRenderPipelineState!
+    private var _viewportSize = vector_uint2(100,100)
 
-    /// @}
+    // @}
     
 }

@@ -12,9 +12,25 @@ import ModelIO
 import Combine
 import simd
 
+/// @group public configurations
+struct MT4ModelConfigs
+{
+    var shouldRotateAroundBBox: Bool = true
+}
+
+/// @group public configurations
+struct MT4Camera
+{
+    // identity
+    var rotation = simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
+    var fov: Float = Float.pi / 3
+    var nearZ: Float = 0.1
+    var farZ: Float = 100
+}
+
 /// 🥷: Main class that is managing all the rendering of the view.
 /// 🌚: adding the shadows for the object on the deferred rendering and a plane to cast shadows on
-class MT4DeferredRenderer : NSObject, MTKViewDelegate {
+class MT4DeferredRenderer : NSObject, MTKViewDelegate, MT4SceneDelegate {
     
     init(metalView: MTKView, objName:String) {
         
@@ -65,35 +81,20 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
     }
     
     /// class public configurations @{
-    
-    struct ModelConfigs
-    {
-        var shouldRotateAroundBBox: Bool = true
-    }
-    
-    struct Camera
-    {
-        var lookAt: (origin:SIMD3<Float>, target:SIMD3<Float>)
-        var fov: Float
-        var aspectRatio: Float
-        var nearZ: Float
-        var farZ: Float
-    }
-
 
     func setLightPosition(_ lightPosition: SIMD3<Float>)
     {
-        _optionalLightPosition = lightPosition;
+        _lightPosition = lightPosition;
     }
     
-    func setModelConfigs(_ modelConfigs: ModelConfigs)
+    func setModelConfigs(_ modelConfigs: MT4ModelConfigs)
     {
         _modelConfigs = modelConfigs
     }
     
-    func setCamera(camera:Camera)
+    func setCamera(camera: MT4Camera)
     {
-        _optionalCamera = camera
+        _camera = camera
     }
 
     /// @}
@@ -228,16 +229,17 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
     private func _render(with view: MTKView) {
 
         let commandBuffer = _commandQueue.makeCommandBuffer()!
-        commandBuffer.label = "Tutorial4Commands"
+        commandBuffer.label = "TutorialCommands"
         
-        var modelMatrix:float4x4?
         let center = (_objboundingBox.maxBounds + _objboundingBox.minBounds)*0.5
-        if(_modelConfigs.shouldRotateAroundBBox)
-        {
-            //model to world
-            modelMatrix =
-                float4x4(rotationAbout: SIMD3<Float>(0, 1, 0), by: Float(_currentAngle)) * float4x4(translationBy: -center)
-        }
+        let modelMatrix:float4x4? = {
+            if(_modelConfigs.shouldRotateAroundBBox)
+            {
+                //model to world
+                return float4x4(rotationAbout: SIMD3<Float>(0, 1, 0), by: Float(_currentAngle)) * float4x4(translationBy: -center)
+            }
+            return nil
+        }()
         
         //the position of the light for the shadow map is inside the uniforms
         var uniforms = _buildUniforms(view, modelMatrix: modelMatrix)
@@ -441,35 +443,22 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
     
     private func _buildUniforms(_ view:MTKView, modelMatrix : float4x4?) -> (MT4VertexUniforms, MT4FragmentUniforms)
     {
-        let lightPosition = _optionalLightPosition ?? _objboundingBox.maxBounds + SIMD3<Float>(20,20,10)
+        let lightPosition = _objboundingBox.maxBounds + _lightPosition
         let center = (_objboundingBox.maxBounds + _objboundingBox.minBounds)*0.5
-        let extent = _objboundingBox.maxBounds - _objboundingBox.minBounds;
 
+        //world to camera view
+        let extent = _objboundingBox.maxBounds - _objboundingBox.minBounds;
+        let origin = _camera.rotation.act(SIMD3<Float>(0, 0, (2+extent.z)))
+        let viewMatrix = float4x4(origin: origin, target: SIMD3<Float>(0,0,0), up: SIMD3<Float>(0,1,0))
+        let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
+        let projectionMatrix = float4x4(perspectiveProjectionFov: _camera.fov, aspectRatio: aspectRatio, nearZ: _camera.nearZ, farZ: _camera.farZ)
+        
+        let modelView = modelMatrix != nil ? viewMatrix * modelMatrix! : viewMatrix
+        let modelViewProjection = projectionMatrix * modelView
+        
         // tutorial 4 - shadows
         let shadowViewMatrix = float4x4(origin: lightPosition, target: center, up: SIMD3<Float>(0,1,0))
         let shadowProjectionMatrix = float4x4(perspectiveProjectionFov:  Float.pi / 16, aspectRatio: 1, nearZ: 0.1, farZ: 10000)
-        
-        //world to camera view
-        var viewMatrix:float4x4!
-        var projectionMatrix: float4x4!
-        var aspectRatio: Float!
-        if let camera = _optionalCamera
-        {
-            viewMatrix = float4x4(origin: camera.lookAt.origin, target: camera.lookAt.target, up: SIMD3<Float>(0,1,0))
-            aspectRatio = camera.aspectRatio
-            projectionMatrix = float4x4(perspectiveProjectionFov: camera.fov, aspectRatio: aspectRatio, nearZ: camera.nearZ, farZ: camera.farZ)
-        }
-        else
-        {
-            //default construction
-            viewMatrix = float4x4(translationBy: SIMD3<Float>(0, 0, -(2+extent.z)))
-            aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
-            projectionMatrix = float4x4(perspectiveProjectionFov: Float.pi / 3, aspectRatio: aspectRatio, nearZ: 0.1, farZ: 100)
-        }
-        
-        let modelView = modelMatrix != nil ? viewMatrix! * modelMatrix! : viewMatrix!
-        let modelViewProjection = projectionMatrix * modelView
-        
         let shadowModelView = modelMatrix != nil ? shadowViewMatrix * modelMatrix! : shadowViewMatrix
         let shadowModelViewProjection = shadowProjectionMatrix * shadowModelView
 
@@ -599,9 +588,9 @@ class MT4DeferredRenderer : NSObject, MTKViewDelegate {
     
     //tutorial 2 - Sample object
 
-    private var _optionalLightPosition: SIMD3<Float>?
-    private var _modelConfigs:ModelConfigs = ModelConfigs()
-    private var _optionalCamera:Camera? 
+    private var _lightPosition = SIMD3<Float>(20,20,10)
+    private var _modelConfigs = MT4ModelConfigs()
+    private var _camera = MT4Camera()
     private var _objboundingBox:MDLAxisAlignedBoundingBox!
     private var _currentAngle:Double = 0
     private var _currentTime:CFTimeInterval?

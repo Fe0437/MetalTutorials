@@ -46,40 +46,44 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
     }
     
     //MARK: class public configurations @{
+   
+   /// @group public configurations
+   struct ModelConfigs
+   {
+       var shouldRotateAroundBBox: Bool = true
+   }
+   
+   /// @group public configurations
+   struct Camera
+   {
+       // identity
+       var rotation = simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
+       var fov: Float = Float.pi / 3
+       var nearZ: Float = 0.1
+       var farZ: Float = 100
+   }
 
-    struct ModelConfigs
-    {
-        var shouldRotateAroundBBox: Bool = true
-    }
-    
-    struct Camera
-    {
-        var lookAt: (origin:SIMD3<Float>, target:SIMD3<Float>)
-        var fov: Float
-        var aspectRatio: Float
-        var nearZ: Float
-        var farZ: Float
-    }
+   /// @group public configurations
+   func setLightPosition(_ lightPosition: SIMD3<Float>)
+   {
+       _lightPosition = lightPosition;
+   }
+   
+   /// @group public configurations
+   func setModelConfigs(_ modelConfigs: ModelConfigs)
+   {
+       _modelConfigs = modelConfigs
+   }
+   
+   /// @group public configurations
+   func setCamera(camera:Camera)
+   {
+       _camera = camera
+   }
+   
+   // class public configurations @}
 
-
-    func setLightPosition(_ lightPosition: SIMD3<Float>)
-    {
-        _optionalLightPosition = lightPosition;
-    }
-    
-    func setModelConfigs(_ modelConfigs: ModelConfigs)
-    {
-        _modelConfigs = modelConfigs
-    }
-    
-    func setCamera(camera:Camera)
-    {
-        _optionalCamera = camera
-    }
-
-    //@}
-
-    //MARK: MTKViewDelegate methods @{
+   //MARK: MTKViewDelegate methods @{
     
     ///whenever the size changes or orientation changes
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -196,7 +200,7 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
         
         if _currentTime != nil {
             let elapsed = time - _currentTime!
-            print("elapsed is \(elapsed)")
+//            print("elapsed is \(elapsed)")
             _currentAngle -= elapsed
         }
         _currentTime = time
@@ -280,39 +284,29 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
         
     }
     
-    private func _buildUniforms(_ view:MTKView) -> (MT2VertexUniforms, MT2FragmentUniforms)
+    /// build the uniforms for the vertex and fragment shaders containing the projection matrix of the camera
+    /// and the modelView matrix
+    private func _buildUniforms(_ view:MTKView) -> (MT3VertexUniforms, MT3FragmentUniforms)
     {
-        var modelMatrix:float4x4?
-        if(_modelConfigs.shouldRotateAroundBBox)
-        {
-            let center = (_objboundingBox.maxBounds + _objboundingBox.minBounds)*0.5
-            
-            //model to world
-            modelMatrix =
-                float4x4(rotationAbout: SIMD3<Float>(0, 1, 0), by: Float(_currentAngle)) * float4x4(translationBy: -center)
-        }
+        let modelMatrix:float4x4? = {
+            if(_modelConfigs.shouldRotateAroundBBox)
+            {
+                let center = (_objboundingBox.maxBounds + _objboundingBox.minBounds)*0.5
+                
+                //model to world
+                return float4x4(rotationAbout: SIMD3<Float>(0, 1, 0), by: Float(_currentAngle)) * float4x4(translationBy: -center)
+            }
+            return nil
+        }()
         
         //world to camera view
-        var viewMatrix:float4x4!
-        var projectionMatrix: float4x4!
-        var aspectRatio: Float!
-        if let camera = _optionalCamera
-        {
-            viewMatrix = float4x4(origin: camera.lookAt.origin, target: camera.lookAt.target, up: SIMD3<Float>(0,1,0))
-            aspectRatio = camera.aspectRatio
-            projectionMatrix = float4x4(perspectiveProjectionFov: camera.fov, aspectRatio: aspectRatio, nearZ: camera.nearZ, farZ: camera.farZ)
-        }
-        else
-        {
-            //default construction
-            let extent = _objboundingBox.maxBounds - _objboundingBox.minBounds;
-            viewMatrix = float4x4(translationBy: SIMD3<Float>(0, 0, -(2+extent.z)))
-            aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
-            projectionMatrix = float4x4(perspectiveProjectionFov: Float.pi / 3, aspectRatio: aspectRatio, nearZ: 0.1, farZ: 100)
-        }
-        
-        
-        let modelView = modelMatrix != nil ? viewMatrix! * modelMatrix! : viewMatrix!
+        let extent = _objboundingBox.maxBounds - _objboundingBox.minBounds;
+        let origin = _camera.rotation.act(SIMD3<Float>(0, 0, (2+extent.z)))
+        let target = SIMD3<Float>(0,0,0)
+        let viewMatrix = float4x4(origin: origin, target: target, up: SIMD3<Float>(0,1,0))
+        let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
+        let projectionMatrix = float4x4(perspectiveProjectionFov: _camera.fov, aspectRatio: aspectRatio, nearZ: _camera.nearZ, farZ: _camera.farZ)
+        let modelView = modelMatrix != nil ? viewMatrix * modelMatrix! : viewMatrix
         let modelViewProjection = projectionMatrix * modelView
         
         // transformations necessary to handle correctly normals
@@ -323,17 +317,16 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
                                     modelView.columns.1[indeces],
                                     modelView.columns.2[indeces]).transpose.inverse
         
-        let lightPosition = _optionalLightPosition ?? _objboundingBox.maxBounds + SIMD3<Float>(100,0,30)
-        
+        let lightPosition = _objboundingBox.maxBounds + _lightPosition
         let viewLightPosition =  viewMatrix * SIMD4<Float>(lightPosition, 1);
         
-        let vertexUniforms = MT2VertexUniforms(
+        let vertexUniforms = MT3VertexUniforms(
             modelViewMatrix: modelView,
             modelViewInverseTransposeMatrix: modelViewInverseTransposeMatrix,
             modelViewProjectionMatrix: modelViewProjection
         )
         
-        let fragmentUniforms = MT2FragmentUniforms(viewLightPosition: viewLightPosition)
+        let fragmentUniforms = MT3FragmentUniforms(viewLightPosition: viewLightPosition)
         
         return (vertexUniforms, fragmentUniforms)
     }
@@ -394,11 +387,12 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
     }
         
     
-    ///tutorial2 - Sample object
-
-    var _optionalLightPosition: SIMD3<Float>?
-    var _modelConfigs:ModelConfigs = ModelConfigs()
-    var _optionalCamera:Camera?
+    //tutorial 2 - Sample object
+    
+    /// position of the light from max bounds of the object
+    var _lightPosition = SIMD3<Float>(20,20,10)
+    var _modelConfigs = ModelConfigs()
+    var _camera = Camera()
     var _objboundingBox:MDLAxisAlignedBoundingBox!
     var _currentAngle:Double = 0
     var _currentTime:CFTimeInterval?
@@ -406,7 +400,7 @@ class MT2ObjRenderer : NSObject, MTKViewDelegate {
     var _vertexDescriptor: MTLVertexDescriptor!
     let _depthStencilState: MTLDepthStencilState
     
-    ///tutorial 1 - Hello
+    //tutorial 1 - Hello
 
     let _metalView:MTKView!
     let _device:MTLDevice!
