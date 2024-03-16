@@ -193,8 +193,8 @@ namespace MT4 {
         float4 position_at_pix = depth.read(pixel_pos.xy);
         
         const float3 V = normalize(-float3(position_at_pix));
-        const float3 N = normalize(normal_at_pix.xyz - position_at_pix.xyz);
-        const float3 L = normalize(float3(uniforms.viewLightPosition - position_at_pix));
+        const float3 N = normalize(normal_at_pix.xyz);
+        const float3 L = normalize(float3(uniforms.viewLightPosition));
         
         // albedo_specular_at_pix.a contains the shadow
         return calculate_out_radiance(albedo_specular_at_pix, L, N, V) * albedo_specular_at_pix.a;

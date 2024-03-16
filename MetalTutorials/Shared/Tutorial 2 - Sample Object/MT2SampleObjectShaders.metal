@@ -94,8 +94,8 @@ namespace MT2 {
                                       constant MT2FragmentUniforms &uniforms [[buffer(1)]]) {
         
         const float3 V = normalize(-float3(fragmentIn.viewPosition));
-        const float3 N = normalize(fragmentIn.viewNormal - fragmentIn.viewPosition.xyz);
-        const float3 L = normalize(float3(uniforms.viewLightPosition - fragmentIn.viewPosition));
+        const float3 N = normalize(fragmentIn.viewNormal);
+        const float3 L = normalize(float3(uniforms.viewLightPosition));
         
         //we could parametrize that, but not important
         //for this tutorial

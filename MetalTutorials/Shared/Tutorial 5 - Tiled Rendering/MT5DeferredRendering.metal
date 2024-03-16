@@ -184,16 +184,16 @@ namespace MT5 {
                                    GBuffer            gBuffer                               ,
                                    constant MT5FragmentUniforms &uniforms [[buffer(1)]])
     {
-        float4 albedo_specular_at_pix = gBuffer.albedo;
+        float4 albedo_vis_at_pix = gBuffer.albedo;
         float4 normal_at_pix = gBuffer.normal;
         float4 position_at_pix = gBuffer.position;
         
         const float3 V = normalize(-float3(position_at_pix));
-        const float3 N = normalize(normal_at_pix.xyz - position_at_pix.xyz);
-        const float3 L = normalize(float3(uniforms.viewLightPosition - position_at_pix));
+        const float3 N = normalize(normal_at_pix.xyz);
+        const float3 L = normalize(float3(uniforms.viewLightPosition));
         
         // albedo_specular_at_pix.a contains the shadow
-        return calculate_out_radiance(albedo_specular_at_pix, L, N, V) * albedo_specular_at_pix.a;
+        return calculate_out_radiance(albedo_vis_at_pix, L, N, V) * albedo_vis_at_pix.a;
     }
  
     //shadows

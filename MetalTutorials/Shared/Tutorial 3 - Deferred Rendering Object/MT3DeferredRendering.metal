@@ -177,8 +177,8 @@ namespace MT3 {
         float4 position_at_pix = position.read(pixel_pos.xy);
         
         const float3 V = normalize(-float3(position_at_pix));
-        const float3 N = normalize(normal_at_pix.xyz - position_at_pix.xyz);
-        const float3 L = normalize(float3(uniforms.viewLightPosition - position_at_pix));
+        const float3 N = normalize(normal_at_pix.xyz);
+        const float3 L = normalize(float3(uniforms.viewLightPosition));
         
         //we could parametrize that, but not important
         //for this tutorial

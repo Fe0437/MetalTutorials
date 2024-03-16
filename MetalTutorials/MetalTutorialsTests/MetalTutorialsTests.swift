@@ -62,7 +62,7 @@ class MetalTutorialsTests: XCTestCase {
         mtkView.delegate = renderer
         
         renderer.setLightPosition(SIMD3<Float>(100,0,30))
-        let camera = MT2ObjRenderer.Camera(lookAt: (origin: SIMD3<Float>(0,0,0), target: SIMD3<Float>(0,0,0)), fov: 0, aspectRatio: 2, nearZ: 0, farZ: 100)
+        let camera = MT2ObjRenderer.Camera()
         renderer.setCamera(camera: camera)
         renderer.setModelConfigs(MT2ObjRenderer.ModelConfigs(shouldRotateAroundBBox: false))
         renderer.shouldRetrieveRenderedUIImage(true)
