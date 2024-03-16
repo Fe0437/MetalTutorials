@@ -23,13 +23,17 @@ struct MT6DeferredMetalView: UIViewRepresentable {
     typealias UIViewType = SceneView
     
     @Binding var camera : MT6Camera
+    @Binding var modelConfigs : MT6ModelConfigs
     
     /// create the mtkview when you create this view
     /// Parameters:
     /// - filename: name of the file to load in the renderer
     /// - camera: binding to position the camera on the metal renderer
-    init(filename: String, camera : Binding<MT6Camera> = .constant(MT6Camera())) {
+    init(filename: String, 
+         camera : Binding<MT6Camera> = .constant(MT6Camera()),
+         configs : Binding<MT6ModelConfigs> = .constant(MT6ModelConfigs())) {
         self._camera = camera
+        self._modelConfigs = configs
         self.sceneView = SceneView()
         self.filename = filename
 
@@ -53,6 +57,7 @@ struct MT6DeferredMetalView: UIViewRepresentable {
     
     func updateUIView(_ uiView: SceneView, context: UIViewRepresentableContext<MT6DeferredMetalView>) {
         uiView.sceneDelegate?.setCamera(camera: camera)
+        uiView.sceneDelegate?.setModelConfigs(modelConfigs)
     }
     
     /// the coordinator is our renderer that manages drawing on the metalview

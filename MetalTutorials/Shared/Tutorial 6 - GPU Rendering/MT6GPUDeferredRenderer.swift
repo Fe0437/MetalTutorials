@@ -218,6 +218,15 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
                             materialArgumentEncoder.setTexture(texture, index: Int(MT6SpecularTexture.rawValue))
                         }
                     }
+                    
+                    for property in mdlSubmesh.material!.properties(with: .tangentSpaceNormal)
+                    {
+                        if let texture = MT6Scene.getTexture(for: submesh, andProperty: property)
+                        {
+                            //set the texture buffer, the index is the id inside the argument struct
+                            materialArgumentEncoder.setTexture(texture, index: Int(MT6NormalTexture.rawValue))
+                        }
+                    }
                 }
                 
                 //set the material argument buffer as a parameter for the compute
@@ -627,7 +636,7 @@ class MT6GPUDeferredRenderer : NSObject, MTKViewDelegate {
             vertexUniformsArray.append(vertexUniforms)
         }
         
-        let viewLightPosition =  viewMatrix * SIMD4<Float>(scene.bboxRelativeLightPosition, 1);
+        let viewLightPosition =  viewMatrix * SIMD4<Float>(scene.worldLightPosition, 1);
         let fragmentUniforms = MT6FragmentUniforms(viewLightPosition: viewLightPosition)
 
         return (vertexUniformsArray, fragmentUniforms)

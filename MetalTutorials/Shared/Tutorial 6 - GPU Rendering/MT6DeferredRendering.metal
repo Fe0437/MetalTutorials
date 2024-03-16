@@ -17,6 +17,7 @@ namespace MT6 {
     struct MaterialArgument {
         texture2d<float> baseColorTexture [[id(MT6BaseColorTexture)]];
         texture2d<float> specularTexture [[id(MT6SpecularTexture)]];
+        texture2d<float> normalTexture [[id(MT6NormalTexture)]];
     };
     
     struct ShadowsArgBuffer {
@@ -88,14 +89,18 @@ namespace MT6 {
     }
     
     struct VertexIn {
-        float3 position  [[attribute(MT6Position)]];
-        float3 normal    [[attribute(MT6Normal)]];
-        float2 texCoords [[attribute(MT6TexCoords)]];
+        float3 position    [[attribute(MT6Position)]];
+        float3 normal      [[attribute(MT6Normal)]];
+        float3 tangent     [[attribute(MT6Tangent)]];
+        float3 bitangent   [[attribute(MT6Bitanget)]];
+        float2 texCoords   [[attribute(MT6TexCoords)]];
     };
     
     struct VertexOut {
         float4 clipSpacePosition [[position]];
         float3 viewNormal;
+        float3 viewTangent;
+        float3 viewBitangent;
         float4 viewPosition;
         float2 texCoords;
         float4 lightViewPosition;
@@ -113,7 +118,9 @@ namespace MT6 {
         MT6VertexUniforms uniforms = pUniforms[meshIndex];
         return VertexOut {
             .clipSpacePosition = uniforms.modelViewProjectionMatrix * float4(vertexIn.position, 1),
-            .viewNormal = uniforms.modelViewInverseTransposeMatrix * vertexIn.normal,
+            .viewNormal = float3(uniforms.modelViewInverseTransposeMatrix * vertexIn.normal),
+            .viewTangent = float3(uniforms.modelViewInverseTransposeMatrix * vertexIn.tangent),
+            .viewBitangent = float3(uniforms.modelViewInverseTransposeMatrix * vertexIn.bitangent),
             .viewPosition = uniforms.modelViewMatrix * float4(vertexIn.position, 1),
             .lightViewPosition = uniforms.shadowModelViewProjectionMatrix * float4(vertexIn.position, 1),
             .texCoords = vertexIn.texCoords,
@@ -152,22 +159,34 @@ namespace MT6 {
         
         float depthValue = shadowArgBuffer.shadowTexture.sample(s, lightScreenCoords);
         if (lightCoords.z > depthValue + 0.00001f) {
-            visibility *= 0.3;
+            visibility *= 0.2;
         }
 
         constexpr sampler shadingTextureSampler;
         float2 texCoords = float2(fragmentIn.texCoords.x,1-fragmentIn.texCoords.y);
         float4 baseColor = material.baseColorTexture.sample(shadingTextureSampler, texCoords);
         float4 specularColor = material.specularTexture.sample(shadingTextureSampler, texCoords);
+        float3 normalTangentSpace = float3(material.normalTexture.sample(shadingTextureSampler, texCoords));
+        
+        if(length(normalTangentSpace) > 0.01){
+            normalTangentSpace = normalize((normalTangentSpace.xyz * 2.0) - 1.0);
+        }else{
+            normalTangentSpace = float3(0,0,1);
+        }
+
+        float3 viewNormal = (normalTangentSpace.x * fragmentIn.viewTangent +
+                         normalTangentSpace.y * fragmentIn.viewBitangent +
+                         normalTangentSpace.z * fragmentIn.viewNormal);
         
         out.basecolor_specular = float4(baseColor.xyz, specularColor.r);
-        out.normal_visibility= float4(normalize(fragmentIn.viewNormal), visibility);
-        out.position = normalize(fragmentIn.viewPosition);
+        out.normal_visibility= float4(normalize(viewNormal), visibility);
+        out.position = fragmentIn.viewPosition;
         
-        if (lightScreenCoords.x < 0.0 || lightScreenCoords.x > 1.0 || lightScreenCoords.y < 0.0 || lightScreenCoords.y > 1.0) {
-            //alert shadow map is not covering this area
-            out.basecolor_specular = float4(1, 0, 0, 0);
-        }
+// debug
+//        if (lightScreenCoords.x < 0.0 || lightScreenCoords.x > 1.0 || lightScreenCoords.y < 0.0 || lightScreenCoords.y > 1.0) {
+//            //alert shadow map is not covering this area
+//            out.basecolor_specular = float4(1, 0, 0, 0);
+//        }
         return out;
     }
     
@@ -282,21 +301,17 @@ namespace MT6 {
     
     fragment float4
     deferred_lighting_fragment(
-                                   QuadInOut             in                      [[ stage_in ]],
-                                   GBuffer            gBuffer                               ,
+                                   QuadInOut                    in                      [[ stage_in ]],
+                                   GBuffer                      gBuffer                                  ,
                                    constant MT6FragmentUniforms &uniforms [[buffer(MT6FragmentUniformsBuffer)]])
     {
-        float4 basecolor_specular_at_pix = gBuffer.basecolor_specular;
-        float4 normal_and_vis_at_pix = gBuffer.normal_visibility;
-        float4 position_at_pix = gBuffer.position;
+        const float visibility = gBuffer.normal_visibility.a;
         
-        const float3 V = normalize(-float3(position_at_pix));
-        const float3 N = normalize(normal_and_vis_at_pix.xyz - position_at_pix.xyz);
-        const float3 L = normalize(float3(uniforms.viewLightPosition - position_at_pix));
-        
-        const float visibility = normal_and_vis_at_pix.a;
+        const float3 V = normalize(-float3(gBuffer.position));
+        const float3 N = normalize(gBuffer.normal_visibility.xyz);
+        const float3 L = normalize(float3(uniforms.viewLightPosition));
         // albedo_specular_at_pix.a contains the shadow
-        return calculate_out_radiance(basecolor_specular_at_pix, L, N, V) * visibility;
+        return calculate_out_radiance(gBuffer.basecolor_specular, L, N, V) * visibility;
     }
  
     //shadows

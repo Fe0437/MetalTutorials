@@ -15,10 +15,15 @@ struct MT6ContentView: View {
     @State var camera = MT6Camera()
     ///velocity of the camera
     let velocity = 0.1
+    
+    @State var configs = MT6ModelConfigs()
 
     var body: some View {
         GeometryReader{ proxy in
-            MT6DeferredMetalView(filename: "toy_biplane_idle.usdz", camera: $camera)
+            MT6DeferredMetalView(
+                filename: "toy_biplane_idle.usdz",
+                camera: $camera,
+                configs: $configs)
                 .navigationTitle("Tutorial 6!")
                 .gesture(
                     DragGesture()
@@ -27,6 +32,9 @@ struct MT6ContentView: View {
                             camera.rotation *= simd_quatf(angle: Float(velocity * gesture.translation.height/proxy.size.height), axis: SIMD3<Float>(1,0,0))
                         }
                 )
+                .onTapGesture(count: 2, perform: {
+                    configs.shouldRotateAroundBBox.toggle()
+                })
         }
     }
 }

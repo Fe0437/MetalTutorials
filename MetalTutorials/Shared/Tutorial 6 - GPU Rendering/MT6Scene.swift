@@ -48,7 +48,7 @@ class MT6Scene : MT6SceneDelegate {
         
         mapMTKSubmeshToMDLMesh = [MTKSubmesh: MDLSubmesh](uniqueKeysWithValues: zip(mtkMeshes.flatMap({$0.submeshes}), (_mdlMeshes.flatMap({$0.submeshes ?? []}) as! [MDLSubmesh])))
         
-        MT6Scene.loopThroughMaterialProperties(in: mapMTKSubmeshToMDLMesh, with: [.baseColor, .specular]){ submesh, property in
+        MT6Scene.loopThroughMaterialProperties(in: mapMTKSubmeshToMDLMesh, with: [.baseColor, .specular, .tangentSpaceNormal]){ submesh, property in
             
             if property.type == .texture {
                 if property.textureSamplerValue != nil {
@@ -85,7 +85,7 @@ class MT6Scene : MT6SceneDelegate {
     }
     
     private var _lightPosition = SIMD3<Float>(20,20,10)
-    var bboxRelativeLightPosition : SIMD3<Float> {
+    var worldLightPosition : SIMD3<Float> {
         bbox.maxBounds + _lightPosition
     }
     private var _modelConfigs = MT6ModelConfigs()
@@ -110,7 +110,7 @@ class MT6Scene : MT6SceneDelegate {
         bbox.maxBounds - bbox.minBounds;
     }
     
-    var shadowViewMatrix : float4x4 {float4x4(origin: bboxRelativeLightPosition, target: center, up: SIMD3<Float>(0,1,0))}
+    var shadowViewMatrix : float4x4 {float4x4(origin: worldLightPosition, target: center, up: SIMD3<Float>(0,1,0))}
     var shadowProjectionMatrix : float4x4 { float4x4(perspectiveProjectionFov:  45/180 * Float.pi, aspectRatio: 1, nearZ: 0.1, farZ: 10000) }
     
     //world to camera view
@@ -133,21 +133,26 @@ class MT6Scene : MT6SceneDelegate {
     }
     
     func computeNewFrame(){
-        _computeCurrentRotationAngle()
+        if(_modelConfigs.shouldRotateAroundBBox){
+            _computeCurrentRotationAngle()
+        }else{
+            //we could change configuration during rendering
+            //thus we must reset the current time because we are
+            //not tracking it anymore
+            _currentTime = nil
+        }
         instancesMatrices.removeAll(keepingCapacity: true)
         instancesMatrices.append(contentsOf: repeatElement(computeModelMatrix(), count: computedNSubmeshes-1))
         instancesMatrices.append(computePlaneMatrix())
     }
     
     func computeModelMatrix() -> float4x4? {
-        var modelMatrix:float4x4?
         let center = (bbox.maxBounds + bbox.minBounds)*0.5
-        if(_modelConfigs.shouldRotateAroundBBox)
-        {
-            //model to world
-            modelMatrix =
-                float4x4(rotationAbout: SIMD3<Float>(0, 1, 0), by: Float(_currentAngle)) * float4x4(translationBy: -center)
-        }
+        var modelMatrix = float4x4(translationBy: -center)
+        //model to world
+        modelMatrix =
+            float4x4(rotationAbout: SIMD3<Float>(0, 1, 0), by: Float(_currentAngle)) * modelMatrix
+    
         return modelMatrix
     }
     
@@ -248,6 +253,24 @@ class MT6Scene : MT6SceneDelegate {
         mdlVertexDescriptor.attributes[Int(MT6Normal.rawValue)] =
         MDLVertexAttribute(
             name: MDLVertexAttributeNormal,
+            format: .float3,
+            offset: offset,
+            bufferIndex: Int(MT6VertexBuffer.rawValue))
+        
+        offset += MemoryLayout<SIMD3<Float>>.stride
+        
+        mdlVertexDescriptor.attributes[Int(MT6Tangent.rawValue)] =
+        MDLVertexAttribute(
+            name: MDLVertexAttributeTangent,
+            format: .float3,
+            offset: offset,
+            bufferIndex: Int(MT6VertexBuffer.rawValue))
+        
+        offset += MemoryLayout<SIMD3<Float>>.stride
+        
+        mdlVertexDescriptor.attributes[Int(MT6Bitanget.rawValue)] =
+        MDLVertexAttribute(
+            name: MDLVertexAttributeBitangent,
             format: .float3,
             offset: offset,
             bufferIndex: Int(MT6VertexBuffer.rawValue))

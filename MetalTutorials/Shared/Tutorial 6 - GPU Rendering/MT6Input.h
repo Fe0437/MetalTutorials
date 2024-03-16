@@ -55,12 +55,15 @@ typedef enum {
   MT6BaseColorTexture = 1,
   MT6SpecularColor = 2,
   MT6SpecularTexture = 3,
+  MT6NormalTexture = 4,
 } MaterialParameters;
 
 typedef enum {
   MT6Position = 0,
   MT6Normal = 1,
-  MT6TexCoords = 2,
+  MT6Tangent = 2,
+  MT6Bitanget = 3,
+  MT6TexCoords = 4,
 } Attributes;
 
 #endif /* MT6Uniforms_h */
