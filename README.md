@@ -1,42 +1,80 @@
-# MetalTutorials
+# 🤟 MetalTutorials 🎸
 
-Welcome to MetalTutorials, a step-by-step guide designed to help you master the Apple Metal framework through concise and progressive coding examples. This repository is tailored for those eager to learn Metal by building up from simple to more complex renderings with minimal code, ensuring ease of understanding at each step.
+Welcome to MetalTutorials, a step-by-step guide designed to assist you in creating your own Metal Renderer. The main objectives of these tutorials are:
+- To maintain minimal code
+- To introduce minimal additions in each tutorial
+This approach helps the reader understand the changes as we progress in building the engine.
 
-## About Metal
+## External Links 🌎
 
-Metal is Apple's high-performance graphics and compute framework, enabling developers to maximize the graphics and compute potential of their devices. 
-## Getting Started
+Metal : https://developer.apple.com/metal/
 
-To dive into MetalTutorials, clone this repository and open the project in Xcode. Each tutorial is structured to build upon the last, starting with the fundamentals and gradually introducing more sophisticated rendering techniques.
+## Getting Started 🏁
 
-### Prerequisites
+Clone this repository and open the project in Xcode.
+Each tutorial is structured to build upon the last, starting with the fundamentals and gradually introducing more sophisticated rendering techniques.
 
-- ma:cOS or iOS device compatible with Metal
-- Latest version of Xcode
+Open the file `MTMetalTuorialsApp.swift` you will find :
 
-### Tutorials Overview
+```swift
+@main
+struct MetalTutorialsApp: App {
+    var body: some Scene {
+        WindowGroup {
+            // substitute here to choose the tutorial
+            MT1ContentView()
+        }
+    }
+}
+```
 
-* Tutorial 1 - Hello Triangle
+Each tutorial has its own ContentView, named MT[tutorial-number]ContentView. 
+To test a specific tutorial, simply replace the number (e.g., MT1ContentView -> MT2ContentView).
+
+Every tutorial is self-contained, allowing you to make modifications without affecting other tutorials.
+
+### Tutorials Overview 👈
+
+* **Tutorial 1** - Hello
 Begin your Metal journey by rendering a simple triangle. This tutorial lays the foundation, introducing the basic setup required to render your first Metal frame.
 
-* Tutorial 2 - Sample Object Loading and Rendering
-Advance to loading and rendering a 3D object with a basic point light, building upon the skills acquired in Tutorial 1.
+<img width="564" alt="image" src="https://github.com/Fe0437/MetalTutorials/assets/7310503/b551e9a3-4147-4071-9386-7726dc35934d">
 
-* Tutorial 3 - Deferred Rendering
-Learn about deferred rendering techniques to enhance your 3D object with the same lighting setup, optimizing performance and visual quality.
+* **Tutorial 2** - Sample Object
+Advance to loading and rendering a 3D object (.obj) with a basic point light, building upon the skills acquired in Tutorial 1.
 
-* Tutorial 4 - Shadow Mapping
-Explore shadow rendering using shadow maps to add depth and realism to your scenes, further expanding your Metal expertise.
+  ![Bunny Obj Sample](https://github.com/Fe0437/MetalTutorials/assets/7310503/aba37ab2-b65d-4bc4-9ed2-9ca20e0e4d9b)
 
-#### Usage
 
-To use a tutorial, navigate to the corresponding directory and change the SwiftUI view shown in ContentView.swift to the view provided by the tutorial. Each tutorial's README contains specific instructions and explanations to guide you through the learning process.
+* **Tutorial 3** - Deferred Rendering
+Learn about deferred rendering techniques. Introduced also camera movement with SwiftUI.
 
-Contributing
+![Bunny Deferred](https://github.com/Fe0437/MetalTutorials/assets/7310503/928668aa-ba0a-4312-9ab8-85c65a963219)
+<img width="330" alt="image" src="https://github.com/Fe0437/MetalTutorials/assets/7310503/6150b4f0-6fff-46dc-8fa8-b6df6f02dd92">
 
-Contributions to MetalTutorials are welcome! Whether it's submitting bug reports, feature requests, or code contributions, your input is valuable in making this project a comprehensive resource for learning Metal.
+* **Tutorial 4** - Shadow Mapping
+Explore shadow rendering using shadow maps.
 
-### Contact
+![Screen Recording 2024-03-26 at 08 50 16](https://github.com/Fe0437/MetalTutorials/assets/7310503/f2d72b01-4732-4848-a3d7-ba9b27ce9e97)
+
+* **Tutorial 5** - Tiled Rendering
+Metal Tiled Rendering. Avoid to store GBuffer textures.
+
+<img width="564" alt="image" src="https://github.com/Fe0437/MetalTutorials/assets/7310503/6be58513-1cf6-4f31-8013-9c687703c4ba">
+
+* **Tutorial 6** - GPU Rendering
+GPU based rendering pipeline. Indirect Command buffers, Argument Buffers, GPU Heap for textures and USDZ loading.
+
+![Screen Recording 2024-03-26 at 08 56 59](https://github.com/Fe0437/MetalTutorials/assets/7310503/a06103fc-a7e4-4f50-a820-8c3a21fd892c)
+<img width="330" alt="image" src="https://github.com/Fe0437/MetalTutorials/assets/7310503/1ea28b7f-a489-4b57-95ce-220ff0a4e0d1">
+
+
+## Contributing 🖋️
+
+Contributions to MetalTutorials are welcome! Whether it's submitting bug reports, feature requests, or code contributions, your input is valuable.
+Commit messages follow the [gitmoji convention](https://gitmoji.dev).
+
+## Contact 📞
 
 For any questions or feedback regarding MetalTutorials, feel free to open an issue in this repository or contact me directly.
 I'm always open to networking opportunities and collaborations. Feel free to reach out to me! :beers:
